@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 
 from fastapi import APIRouter, Body, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
@@ -10,17 +10,21 @@ from app.crud.delivery_partner import (
     get_delivery_partner,
     get_delivery_partner_by_user,
     update_delivery_partner,
+    update_verification_status,
 )
 from app.crud.delivery_assignment import (
     assign_delivery_partner_to_order,
     get_available_partners_near_restaurant,
 )
+from app.crud.order import get_order, update_order_status
 from app.crud.tracking import update_tracking, get_tracking
+from app.db.models.order import Order
 from app.db.models.user import User
 from app.schemas.delivery_partner import (
     DeliveryPartnerCreate,
     DeliveryPartnerRead,
     DeliveryPartnerUpdate,
+    VerificationStatus,
 )
 from app.schemas.order import OrderRead
 from app.services import realtime as realtime_service
@@ -29,51 +33,49 @@ router = APIRouter()
 
 
 @router.post(
-    "/register",
+    "/onboard",
     response_model=DeliveryPartnerRead,
     status_code=status.HTTP_201_CREATED,
-    summary="Register as a delivery partner",
 )
-def register_delivery_partner(
-    partner_in: DeliveryPartnerCreate,
-    current_user: User = Depends(get_current_active_user),
+def onboard_delivery_partner(
+    profile_in: DeliveryPartnerCreate,
+    current_user: User = Depends(require_roles(Role.delivery_partner)),
     db: Session = Depends(get_db),
 ):
     existing = get_delivery_partner_by_user(db, current_user.id)
     if existing:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="You are already registered as a delivery partner.",
+            detail="You have already submitted onboarding details.",
         )
-    return create_delivery_partner(db, current_user.id, partner_in)
+    partner = create_delivery_partner(db, current_user.id, profile_in)
+    return partner
 
 
 @router.get(
     "/profile",
     response_model=DeliveryPartnerRead,
-    summary="Get current delivery partner profile",
 )
-def get_profile(
-    current_user: User = Depends(get_current_active_user),
+def read_delivery_partner_profile(
+    current_user: User = Depends(require_roles(Role.delivery_partner)),
     db: Session = Depends(get_db),
 ):
     partner = get_delivery_partner_by_user(db, current_user.id)
     if not partner:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="Delivery partner profile not found.",
+            detail="Delivery partner profile not found. Please complete onboarding.",
         )
     return partner
 
 
 @router.put(
-    "/availability",
+    "/profile",
     response_model=DeliveryPartnerRead,
-    summary="Update delivery partner availability",
 )
-def update_availability(
-    availability_in: DeliveryPartnerUpdate,
-    current_user: User = Depends(get_current_active_user),
+def update_delivery_partner_profile(
+    profile_in: DeliveryPartnerUpdate,
+    current_user: User = Depends(require_roles(Role.delivery_partner)),
     db: Session = Depends(get_db),
 ):
     partner = get_delivery_partner_by_user(db, current_user.id)
@@ -82,113 +84,123 @@ def update_availability(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Delivery partner profile not found.",
         )
-    return update_delivery_partner(db, partner, availability_in)
+    return update_delivery_partner(db, partner, profile_in)
 
 
-@router.get(
-    "/available",
-    response_model=List[DeliveryPartnerRead],
-    summary="Get available delivery partners near a restaurant",
-)
-def list_available_partners(
-    restaurant_id: str = Query(..., description="Restaurant ID to find partners near."),
-    radius_km: float = Query(20.0, ge=1.0, description="Search radius in kilometers."),
-    limit: int = Query(10, ge=1, le=50),
-    current_user: User = Depends(require_roles(Role.restaurant_owner, Role.admin)),
-    db: Session = Depends(get_db),
-):
-    partners = get_available_partners_near_restaurant(
-        db,
-        restaurant_id=restaurant_id,
-        radius_km=radius_km,
-        limit=limit,
-    )
-    return partners
-
-
-@router.post(
-    "/assign",
+@router.put(
+    "/availability",
     response_model=DeliveryPartnerRead,
-    status_code=status.HTTP_201_CREATED,
-    summary="Assign a delivery partner to an order",
 )
-def assign_partner(
-    order_id: str = Body(..., embed=True),
-    current_user: User = Depends(require_roles(Role.restaurant_owner, Role.admin)),
+def update_availability(
+    is_available: bool = Body(..., embed=True),
+    current_user: User = Depends(require_roles(Role.delivery_partner)),
     db: Session = Depends(get_db),
 ):
-    try:
-        order, partner = assign_delivery_partner_to_order(db, order_id)
-    except ValueError as exc:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc)) from exc
-
-    return partner
-
-
-@router.post(
-    "/order/{order_id}/location",
-    response_model=OrderRead,
-    summary="Update delivery partner GPS location and recalculate ETA",
-)
-def update_delivery_location(
-    order_id: str,
-    payload: dict = Body(...),
-    current_user: User = Depends(get_current_active_user),
-    db: Session = Depends(get_db),
-):
-    try:
-        import uuid
-        parsed_id = uuid.UUID(order_id)
-    except ValueError:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid order id.")
-
-    required = {"partner_lat", "partner_lng"}
-    if not required.issubset(payload):
+    partner = get_delivery_partner_by_user(db, current_user.id)
+    if not partner:
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="partner_lat and partner_lng are required.",
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Delivery partner profile not found.",
         )
-
-    try:
-        order = update_tracking(db, parsed_id, payload)
-    except ValueError as exc:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
-
-    try:
-        realtime_service.emit_location(
-            order_id,
-            {
-                "lat": payload.get("partner_lat"),
-                "lng": payload.get("partner_lng"),
-                "heading": payload.get("heading"),
-                "speed": payload.get("speed"),
-                "updated_at": str(order.last_location_updated_at),
-            },
-        )
-    except Exception:
-        pass
-
-    return order
+    update_data = DeliveryPartnerUpdate(is_available=is_available)
+    return update_delivery_partner(db, partner, update_data)
 
 
 @router.get(
-    "/order/{order_id}/tracking",
-    response_model=OrderRead,
-    summary="Get tracking data for an order",
+    "/available-orders",
+    response_model=List[OrderRead],
 )
-def get_order_tracking(
-    order_id: str,
-    current_user: User = Depends(get_current_active_user),
+def get_available_orders(
+    current_user: User = Depends(require_roles(Role.delivery_partner)),
     db: Session = Depends(get_db),
 ):
-    try:
-        import uuid
-        parsed_id = uuid.UUID(order_id)
-    except ValueError:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid order id.")
+    orders = (
+        db.query(Order)
+        .filter(Order.status == "ready_for_pickup")
+        .order_by(Order.created_at.desc())
+        .limit(20)
+        .all()
+    )
+    return orders
 
-    order = get_tracking(db, parsed_id)
+
+@router.post(
+    "/assignments/{order_id}/accept",
+    response_model=OrderRead,
+)
+def accept_delivery(
+    order_id: str,
+    current_user: User = Depends(require_roles(Role.delivery_partner)),
+    db: Session = Depends(get_db),
+):
+    partner = get_delivery_partner_by_user(db, current_user.id)
+    if not partner or partner.verification_status != VerificationStatus.approved:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Your account is not verified. You cannot accept orders yet.",
+        )
+    try:
+        order, assigned_partner = assign_delivery_partner_to_order(db, order_id)
+        realtime_service.emit_order_assigned(order.id, assigned_partner.id)
+        return order
+    except ValueError as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+
+
+@router.put(
+    "/assignments/{order_id}/picked-up",
+    response_model=OrderRead,
+)
+def mark_picked_up(
+    order_id: str,
+    current_user: User = Depends(require_roles(Role.delivery_partner)),
+    db: Session = Depends(get_db),
+):
+    order = get_order(db, order_id)
     if not order:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Order not found.")
-
+    partner = get_delivery_partner_by_user(db, current_user.id)
+    if not partner or (order.delivery_partner_id and order.delivery_partner_id != partner.id):
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not your order.")
+    update_order_status(db, order, "picked_up")
     return order
+
+
+@router.put(
+    "/assignments/{order_id}/delivered",
+    response_model=OrderRead,
+)
+def mark_delivered(
+    order_id: str,
+    current_user: User = Depends(require_roles(Role.delivery_partner)),
+    db: Session = Depends(get_db),
+):
+    order = get_order(db, order_id)
+    if not order:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Order not found.")
+    partner = get_delivery_partner_by_user(db, current_user.id)
+    if not partner or (order.delivery_partner_id and order.delivery_partner_id != partner.id):
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not your order.")
+    update_order_status(db, order, "delivered")
+    realtime_service.emit_order_delivered(order.id)
+    return order
+
+
+@router.post(
+    "/location",
+    response_model=DeliveryPartnerRead,
+)
+def update_location(
+    latitude: float = Body(..., embed=True),
+    longitude: float = Body(..., embed=True),
+    current_user: User = Depends(require_roles(Role.delivery_partner)),
+    db: Session = Depends(get_db),
+):
+    partner = get_delivery_partner_by_user(db, current_user.id)
+    if not partner:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Delivery partner profile not found.",
+        )
+    update_data = DeliveryPartnerUpdate(current_latitude=latitude, current_longitude=longitude)
+    return update_delivery_partner(db, partner, update_data)

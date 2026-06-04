@@ -7,15 +7,18 @@ from .order import Order, OrderItem
 from .payment import Payment
 from .refresh_token import RefreshToken
 from .restaurant import Restaurant
+from .restaurant_owner_profile import RestaurantOwnerProfile
 from .review import Review
 from .user import User
 from .user_activity import UserActivity
 from .user_favorite import UserFavorite
+from .cart import Cart, CartItem
 
 __all__ = [
     "User",
     "RefreshToken",
     "Restaurant",
+    "RestaurantOwnerProfile",
     "Address",
     "Order",
     "OrderItem",
@@ -27,4 +30,6 @@ __all__ = [
     "Coupon",
     "UserActivity",
     "UserFavorite",
+    "Cart",
+    "CartItem",
 ]

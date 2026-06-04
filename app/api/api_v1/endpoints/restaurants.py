@@ -137,11 +137,19 @@ def owner_dashboard(
     current_user: User = Depends(require_roles(Role.restaurant_owner, Role.admin)),
     db: Session = Depends(get_db),
 ):
-    """Get dashboard overview for the restaurant owner."""
+    """Get dashboard overview for the restaurant owner. Requires verification for restaurant_owner role."""
     if current_user.role == Role.admin.value:
         # Admin sees all restaurants — let them pick; for now return first 5
         restaurants = db.query(Restaurant).limit(5).all()
     else:
+        # Check if owner profile exists and is verified
+        from app.crud.restaurant_owner_profile import get_owner_profile
+        owner_profile = get_owner_profile(db, current_user.id)
+        if not owner_profile or owner_profile.verification_status != "approved":
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Restaurant owner account not verified. Complete onboarding at /restaurant-owner/onboard.",
+            )
         restaurants = get_restaurants_by_owner(db, current_user.id)
 
     if not restaurants:

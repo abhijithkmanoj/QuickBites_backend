@@ -16,7 +16,6 @@ class User(Base):
     password_hash = Column(String(255), nullable=False)
     role = Column(String(50), nullable=False, default="customer")
     # Enhanced profile fields
-    profile_image_url = Column(String(255), nullable=True)
     bio = Column(Text, nullable=True)
     date_of_birth = Column(DateTime, nullable=True)
     gender = Column(String(20), nullable=True)
@@ -33,6 +32,12 @@ class User(Base):
         "RefreshToken",
         back_populates="user",
         cascade="all, delete-orphan",
+    )
+    cart = relationship(
+        "Cart",
+        back_populates="user",
+        cascade="all, delete-orphan",
+        uselist=False,
     )
     restaurants = relationship(
         "Restaurant",

@@ -14,6 +14,7 @@ from app.api.api_v1.endpoints.reviews import router as reviews_router
 from app.api.api_v1.endpoints.recommendations import router as recommendations_router
 from app.api.api_v1.endpoints.monitoring import router as monitoring_router
 from app.api.api_v1.endpoints.users import router as users_router
+from app.api.api_v1.endpoints.restaurant_owner import router as owner_router
 
 router = APIRouter()
 router.include_router(addresses_router, prefix="/addresses", tags=["addresses"])
@@ -31,3 +32,4 @@ router.include_router(admin_router, prefix="/admin", tags=["admin"])
 router.include_router(monitoring_router, prefix="/monitoring", tags=["monitoring"])
 router.include_router(users_router, prefix="/users", tags=["users"])
 router.include_router(recommendations_router, prefix="/recommendations", tags=["recommendations"])
+router.include_router(owner_router, prefix="/owner", tags=["owner"])

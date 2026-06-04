@@ -28,11 +28,22 @@ app.add_middleware(
     expose_headers=["*"],
     max_age=600,
 )
+
 app.add_middleware(RequestLoggingMiddleware)
-app.add_middleware(RateLimitMiddleware, requests=settings.RATE_LIMIT_REQUESTS, window=settings.RATE_LIMIT_WINDOW_SECONDS)
+
+app.add_middleware(
+    RateLimitMiddleware,
+    requests=settings.RATE_LIMIT_REQUESTS,
+    window=settings.RATE_LIMIT_WINDOW_SECONDS,
+)
 
 register_exception_handlers(app)
-app.include_router(api_router, prefix=settings.API_V1_STR)
+
+app.include_router(
+    api_router,
+    prefix=settings.API_V1_STR,
+)
+
 app.mount("/socket.io", socket_app)
 
 

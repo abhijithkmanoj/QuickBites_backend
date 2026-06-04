@@ -40,12 +40,16 @@ def get_available_partners_near_restaurant(
     if not restaurant or restaurant.latitude is None or restaurant.longitude is None:
         return []
 
-    partners = db.query(DeliveryPartner).filter(DeliveryPartner.is_available.is_(True)).all()
+    # Only get verified and available partners
+    partners = db.query(DeliveryPartner).filter(
+        DeliveryPartner.is_available.is_(True),
+        DeliveryPartner.verification_status == "approved",
+    ).all()
 
     scored = []
     for partner in partners:
         user = partner.user
-        if not user:
+        if not user or not user.is_active:
             continue
         scored.append((partner, user))
 

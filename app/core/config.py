@@ -1,8 +1,8 @@
 from pathlib import Path
-from typing import Optional, List
+from typing import List, Optional
 
-from pydantic_settings import BaseSettings, SettingsConfigDict
 from pydantic import field_validator
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 PROJECT_DIR = Path(__file__).resolve().parent.parent.parent
 
@@ -19,7 +19,7 @@ class Settings(BaseSettings):
     REFRESH_TOKEN_COOKIE_NAME: str = "refresh_token"
     REFRESH_TOKEN_COOKIE_MAX_AGE: int = 604800
     JWT_ALGORITHM: str = "HS256"
-    # Store as string in env, then convert to list via property
+    
     CORS_ORIGINS: str = "*"
 
     REDIS_URL: str = "redis://localhost:6379/0"
@@ -41,20 +41,26 @@ class Settings(BaseSettings):
     RATE_LIMIT_WINDOW_SECONDS: int = 60
 
     @field_validator("DEBUG", mode="before")
-    def coerce_debug(cls, value: Optional[str]) -> bool:
+    @classmethod
+    def coerce_debug(cls, value):
         if isinstance(value, bool):
             return value
         if value is None:
             return True
-        return value.strip().lower() not in ("false", "0", "no", "off", "release")
+        return str(value).strip().lower() not in (
+            "false", "0", "no", "off", "release"
+        )
 
     @field_validator("USE_REDIS_CACHE", mode="before")
-    def coerce_use_redis(cls, value: Optional[str]) -> bool:
+    @classmethod
+    def coerce_use_redis(cls, value):
         if isinstance(value, bool):
             return value
         if value is None:
             return False
-        return value.strip().lower() in ("true", "1", "yes", "on")
+        return str(value).strip().lower() in (
+            "true", "1", "yes", "on"
+        )
 
     @property
     def cors_origins_list(self) -> List[str]:
@@ -69,9 +75,11 @@ class Settings(BaseSettings):
         return [origin.strip() for origin in self.CORS_ORIGINS.split(",") if origin.strip()]
 
     model_config = SettingsConfigDict(
-        env_file=PROJECT_DIR / ".env",
-        case_sensitive=True,
-        env_parse_env_file_encoding='utf-8',
+        env_file=str(PROJECT_DIR / ".env"),
+        env_file_encoding="utf-8",
+        case_sensitive=False,
+        extra="ignore",
     )
+
 
 settings = Settings()

@@ -15,6 +15,7 @@ class Cart(Base):
     restaurant_id = Column(GUID, ForeignKey("restaurants.id", ondelete="CASCADE"), nullable=False, index=True)
     created_at = Column(DateTime, default=datetime.utcnow)
 
+    user = relationship("User", back_populates="cart")
     items = relationship("CartItem", back_populates="cart", cascade="all, delete-orphan")
 
 
@@ -31,4 +32,3 @@ class CartItem(Base):
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     cart = relationship("Cart", back_populates="items")
-

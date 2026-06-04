@@ -1,12 +1,18 @@
 
 import uuid
+import enum
 from datetime import datetime
 
-from sqlalchemy import Column, DateTime, ForeignKey, String, UniqueConstraint
+from sqlalchemy import Column, DateTime, ForeignKey, String, UniqueConstraint, Enum
 from sqlalchemy.orm import relationship
 
 from app.db.base import Base
 from app.db.types import GUID
+
+
+class FavoriteType(str, enum.Enum):
+    RESTAURANT = "restaurant"
+    MENU_ITEM = "menu_item"
 
 
 class UserFavorite(Base):
@@ -21,8 +27,8 @@ class UserFavorite(Base):
         nullable=False,
         index=True,
     )
-    # "restaurant" or "menu_item"
-    favorite_type = Column(String(20), nullable=False)
+
+    favorite_type = Column(Enum(FavoriteType), nullable=False)
     # UUID of the restaurant or menu_item row
     favorite_id = Column(GUID, nullable=False, index=True)
     created_at = Column(DateTime, default=datetime.utcnow)
@@ -33,4 +39,3 @@ class UserFavorite(Base):
         # one entry per (user, type, item) pair
         UniqueConstraint("user_id", "favorite_type", "favorite_id", name="uq_user_favorite"),
     )
-

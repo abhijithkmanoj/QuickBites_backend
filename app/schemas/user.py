@@ -30,7 +30,6 @@ class UserRead(BaseModel):
     phone: Optional[str] = None
     role: str
     profile_image: Optional[str] = None
-    profile_image_url: Optional[str] = None
     bio: Optional[str] = None
     date_of_birth: Optional[datetime] = None
     gender: Optional[str] = None
@@ -95,7 +94,7 @@ class UserUpdate(BaseModel):
     phone: Optional[str] = None
     role: Optional[str] = None
     is_active: Optional[bool] = None
-    profile_image_url: Optional[str] = None
+    profile_image: Optional[str] = None
     bio: Optional[str] = None
     date_of_birth: Optional[datetime] = None
     gender: Optional[str] = None

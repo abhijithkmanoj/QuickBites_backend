@@ -39,7 +39,10 @@ def register(user_in: UserCreate, db: Session = Depends(get_db)):
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="A user with this email already exists.",
         )
-    if user_in.role not in ALL_ROLES:
+    # Public registration: only allow customer or restaurant_owner roles
+    # Admin and delivery_partner roles require separate onboarding flows
+    allowed_roles = [Role.customer.value, Role.restaurant_owner.value]
+    if user_in.role not in allowed_roles:
         user_in.role = Role.customer
     user = create_user(db, user_in)
     try:
