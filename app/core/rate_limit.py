@@ -3,6 +3,7 @@ import time
 from collections import defaultdict
 from starlette.middleware.base import BaseHTTPMiddleware
 from fastapi import Request, Response
+from app.core.config import settings
 
 logger = logging.getLogger("app.security")
 
@@ -26,7 +27,18 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
 
         if len(timestamps) >= self.requests:
             logger.warning("Rate limit exceeded for %s on %s", client_ip, request.url.path)
-            return Response(content='{"detail":"Too many requests"}', status_code=429, media_type="application/json")
+            # Include CORS headers on the response so browsers receive them
+            origin = request.headers.get("origin")
+            allow_origins = settings.cors_origins_list
+            headers = {}
+            if allow_origins == ["*"]:
+                headers["access-control-allow-origin"] = "*"
+            elif origin and origin in allow_origins:
+                headers["access-control-allow-origin"] = origin
+            # Allow credentials if configured
+            headers["access-control-allow-credentials"] = "true"
+            headers["content-type"] = "application/json"
+            return Response(content='{"detail":"Too many requests"}', status_code=429, media_type="application/json", headers=headers)
 
         timestamps.append(now)
         return await call_next(request)

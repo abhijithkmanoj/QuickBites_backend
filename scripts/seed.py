@@ -105,6 +105,26 @@ RESTAURANTS = [
             {"category": "Dessert", "name": "Acai Bowl", "description": "Acai with granola and fresh fruit", "price": 7.49, "is_veg": True},
         ],
     },
+    {
+        "name": "Five Star",
+        "description": "Signature restaurant with premium dishes, quality ingredients, and fast delivery.",
+        "cuisine": "Indian",
+        "address": "101 Star Street, Central City",
+        "latitude": 12.9750,
+        "longitude": 77.5910,
+        "rating": 4.8,
+        "delivery_time": 28,
+        "menu_items": [
+            {"category": "Starters", "name": "Star Platter", "description": "Crispy paneer tikka, chicken kebab, and spicy potato wedges", "price": 12.99, "is_veg": False},
+            {"category": "Starters", "name": "Golden Samosas", "description": "Crunchy samosas stuffed with spiced potatoes and peas", "price": 5.49, "is_veg": True},
+            {"category": "Mains", "name": "Royal Butter Chicken", "description": "Tender chicken cooked in rich tomato and butter gravy", "price": 14.99, "is_veg": False},
+            {"category": "Mains", "name": "Paneer Lababdar", "description": "Cottage cheese simmered in creamy tomato sauce", "price": 13.99, "is_veg": True},
+            {"category": "Rice", "name": "Five Star Biryani", "description": "Aromatic basmati biryani with saffron, herbs, and choice of chicken or paneer", "price": 15.99, "is_veg": False},
+            {"category": "Breads", "name": "Garlic Naan", "description": "Soft naan brushed with garlic butter", "price": 3.49, "is_veg": True},
+            {"category": "Dessert", "name": "Kheer", "description": "Creamy rice pudding topped with nuts and saffron", "price": 4.99, "is_veg": True},
+            {"category": "Drinks", "name": "Mango Lassi", "description": "Refreshing mango yogurt drink", "price": 4.49, "is_veg": True},
+        ],
+    },
 ]
 
 
@@ -115,7 +135,7 @@ def main():
     db = SessionLocal()
 
     # create owners and customers
-    owner_emails = ["owner@seed.local", "owner2@seed.local", "owner3@seed.local", "owner4@seed.local", "owner5@seed.local"]
+    owner_emails = ["owner@seed.local", "owner2@seed.local", "owner3@seed.local", "owner4@seed.local", "owner5@seed.local", "fivestar@gmail.com"]
     customer_email = "customer@seed.local"
     
     owners = []

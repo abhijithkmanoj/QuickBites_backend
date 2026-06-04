@@ -338,7 +338,8 @@ def get_order_history(
     db: Session = Depends(get_db),
 ):
     """Return paginated order history for the current user with optional status filter."""
-    query = db.query(Order).filter(Order.user_id == current_user.id)
+    # Orders are stored with `customer_id` on the Order model
+    query = db.query(Order).filter(Order.customer_id == current_user.id)
     
     if status_filter:
         query = query.filter(Order.status == status_filter)
@@ -351,7 +352,7 @@ def get_order_history(
             {
                 "id": str(o.id),
                 "restaurant_id": str(o.restaurant_id),
-                "total_price": float(o.total_price),
+                "total_price": float(getattr(o, 'total_price', o.total_amount if hasattr(o, 'total_amount') else 0.0)),
                 "status": o.status,
                 "created_at": o.created_at,
                 "updated_at": o.updated_at,
