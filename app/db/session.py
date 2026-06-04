@@ -1,12 +1,19 @@
+import logging
+
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from app.core.config import settings
 
+logger = logging.getLogger(__name__)
+
 if not settings.DATABASE_URL or not settings.DATABASE_URL.strip():
     raise RuntimeError(
-        "DATABASE_URL must be set in the environment or backend/.env before starting the app. "
-        "Use a valid SQLAlchemy URL such as postgresql://user:pass@host:port/dbname."
+        "DATABASE_URL must be provided by the environment before starting the app. "
+        "On Railway, configure the PostgreSQL plugin and ensure DATABASE_URL is injected. "
+        "Supported alternate env vars: POSTGRES_URL, POSTGRESQL_URL, RAILWAY_DATABASE_URL."
     )
+
+logger.info("Database connection target: %s", settings.database_url_info)
 
 connect_args = {}
 if settings.DATABASE_URL.startswith("sqlite"):

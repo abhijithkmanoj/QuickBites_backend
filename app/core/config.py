@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 from typing import List, Optional
 
@@ -13,7 +14,7 @@ class Settings(BaseSettings):
     ENVIRONMENT: str = "development"
     DEBUG: bool = True
     API_V1_STR: str = "/api/v1"
-    DATABASE_URL: str = Field(..., min_length=1)
+    DATABASE_URL: Optional[str] = None
     SECRET_KEY: str = "change-me"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     REFRESH_TOKEN_EXPIRE_DAYS: int = 7
@@ -68,11 +69,25 @@ class Settings(BaseSettings):
     def validate_database_url(cls, value):
         if isinstance(value, str):
             value = value.strip()
+
         if not value:
-            raise ValueError(
-                "DATABASE_URL is required and must be set in Railway env vars or backend/.env. "
-                "Example: postgresql://user:pass@host:port/dbname"
-            )
+            for alias in (
+                "DATABASE_URL",
+                "POSTGRES_URL",
+                "POSTGRESQL_URL",
+                "RAILWAY_DATABASE_URL",
+                "PG_URL",
+                "PG_URI",
+            ):
+                value = os.environ.get(alias)
+                if isinstance(value, str):
+                    value = value.strip()
+                if value:
+                    break
+
+        if not value:
+            return None
+
         try:
             make_url(value)
         except Exception as exc:
@@ -92,6 +107,16 @@ class Settings(BaseSettings):
             except Exception:
                 pass
         return [origin.strip() for origin in self.CORS_ORIGINS.split(",") if origin.strip()]
+
+    @property
+    def database_url_info(self) -> str:
+        if not self.DATABASE_URL:
+            return "DATABASE_URL is not configured"
+        parsed = make_url(self.DATABASE_URL)
+        host = parsed.host or "unknown-host"
+        database = parsed.database or "unknown-db"
+        port = f":{parsed.port}" if parsed.port else ""
+        return f"{host}{port}/{database}"
 
     model_config = SettingsConfigDict(
         env_file=str(PROJECT_DIR / ".env"),

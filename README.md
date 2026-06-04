@@ -11,8 +11,9 @@ This is the FastAPI backend for the QuickBites food delivery platform.
 
 ## Environment
 
-- `backend/.env` contains the required default variables for local development.
-- `DATABASE_URL` should point to a PostgreSQL instance in production.
+- `backend/.env` contains the required default variables for local development only.
+- In production, the app reads `DATABASE_URL` from the environment; a local `.env` file is not required.
+- The app also accepts alternate env vars when `DATABASE_URL` is not set: `POSTGRES_URL`, `POSTGRESQL_URL`, `RAILWAY_DATABASE_URL`, `PG_URL`, `PG_URI`.
 - `SECRET_KEY` should be a secure random string.
 
 ## Database Setup
