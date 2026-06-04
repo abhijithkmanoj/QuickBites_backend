@@ -6,19 +6,19 @@ This is the FastAPI backend for the QuickBites food delivery platform.
 
 1. Install Poetry: `pip install poetry`
 2. Install dependencies: `poetry install`
-3. Copy `.env.example` to `.env` and update values
+3. Create or update `backend/.env` with your environment values
 4. Run locally: `poetry run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000`
 
 ## Environment
 
-- `.env.example` contains the required default variables.
-- `DATABASE_URL` should point to a PostgreSQL instance.
+- `backend/.env` contains the required default variables for local development.
+- `DATABASE_URL` should point to a PostgreSQL instance in production.
 - `SECRET_KEY` should be a secure random string.
 
 ## Database Setup
 
 1. Create a PostgreSQL database.
-2. Copy `.env.example` to `.env`.
+2. Update `backend/.env` or your environment variables.
 3. Set `DATABASE_URL` to your database connection string.
 
 ## Database Migrations

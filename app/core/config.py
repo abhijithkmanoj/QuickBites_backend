@@ -1,8 +1,9 @@
 from pathlib import Path
 from typing import List, Optional
 
-from pydantic import field_validator
+from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
+from sqlalchemy.engine.url import make_url
 
 PROJECT_DIR = Path(__file__).resolve().parent.parent.parent
 
@@ -12,7 +13,7 @@ class Settings(BaseSettings):
     ENVIRONMENT: str = "development"
     DEBUG: bool = True
     API_V1_STR: str = "/api/v1"
-    DATABASE_URL: str = "sqlite:///./test.db"
+    DATABASE_URL: str = Field(..., min_length=1)
     SECRET_KEY: str = "change-me"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     REFRESH_TOKEN_EXPIRE_DAYS: int = 7
@@ -61,6 +62,24 @@ class Settings(BaseSettings):
         return str(value).strip().lower() in (
             "true", "1", "yes", "on"
         )
+
+    @field_validator("DATABASE_URL", mode="before")
+    @classmethod
+    def validate_database_url(cls, value):
+        if isinstance(value, str):
+            value = value.strip()
+        if not value:
+            raise ValueError(
+                "DATABASE_URL is required and must be set in Railway env vars or backend/.env. "
+                "Example: postgresql://user:pass@host:port/dbname"
+            )
+        try:
+            make_url(value)
+        except Exception as exc:
+            raise ValueError(
+                f"DATABASE_URL is invalid: {exc}. Provide a valid SQLAlchemy URL like postgresql://user:pass@host:port/dbname"
+            ) from exc
+        return value
 
     @property
     def cors_origins_list(self) -> List[str]:
