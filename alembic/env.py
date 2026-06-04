@@ -19,8 +19,13 @@ from app.core.config import settings
 config = context.config
 fileConfig(config.config_file_name)
 
-if config.get_main_option("sqlalchemy.url") is None:
+configured_url = config.get_main_option("sqlalchemy.url")
+if settings.DATABASE_URL:
     config.set_main_option("sqlalchemy.url", settings.DATABASE_URL)
+elif configured_url is None:
+    raise RuntimeError(
+        "Alembic requires a database URL. Set DATABASE_URL in the environment or provide sqlalchemy.url in alembic.ini."
+    )
 
 target_metadata = Base.metadata
 

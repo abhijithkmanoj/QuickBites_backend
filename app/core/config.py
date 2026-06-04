@@ -14,15 +14,18 @@ class Settings(BaseSettings):
     ENVIRONMENT: str = "development"
     DEBUG: bool = True
     API_V1_STR: str = "/api/v1"
+
     DATABASE_URL: Optional[str] = None
+
     SECRET_KEY: str = "change-me"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     REFRESH_TOKEN_EXPIRE_DAYS: int = 7
     REFRESH_TOKEN_COOKIE_NAME: str = "refresh_token"
     REFRESH_TOKEN_COOKIE_MAX_AGE: int = 604800
     JWT_ALGORITHM: str = "HS256"
-    
-    CORS_ORIGINS: str = "*"
+
+    # Must be provided from .env
+    CORS_ORIGINS: str = Field(...)
 
     REDIS_URL: str = "redis://localhost:6379/0"
     CACHE_PREFIX: str = "quickbites:"
@@ -50,7 +53,11 @@ class Settings(BaseSettings):
         if value is None:
             return True
         return str(value).strip().lower() not in (
-            "false", "0", "no", "off", "release"
+            "false",
+            "0",
+            "no",
+            "off",
+            "release",
         )
 
     @field_validator("USE_REDIS_CACHE", mode="before")
@@ -61,8 +68,20 @@ class Settings(BaseSettings):
         if value is None:
             return False
         return str(value).strip().lower() in (
-            "true", "1", "yes", "on"
+            "true",
+            "1",
+            "yes",
+            "on",
         )
+
+    @field_validator("CORS_ORIGINS")
+    @classmethod
+    def validate_cors_origins(cls, value):
+        if not value or not value.strip():
+            raise ValueError(
+                "CORS_ORIGINS must be provided in .env or environment variables"
+            )
+        return value.strip()
 
     @field_validator("DATABASE_URL", mode="before")
     @classmethod
@@ -89,33 +108,47 @@ class Settings(BaseSettings):
             return None
 
         try:
-            make_url(value)
+            parsed = make_url(value)
         except Exception as exc:
             raise ValueError(
-                f"DATABASE_URL is invalid: {exc}. Provide a valid SQLAlchemy URL like postgresql://user:pass@host:port/dbname"
+                f"DATABASE_URL is invalid: {exc}. "
+                f"Provide a valid SQLAlchemy URL like "
+                f"postgresql://user:pass@host:port/dbname"
             ) from exc
+
+        if (
+            str(parsed.username).lower() == "username"
+            or str(parsed.password).lower() == "password"
+            or str(parsed.host).lower() == "host"
+            or str(parsed.database).lower() == "database"
+        ):
+            raise ValueError(
+                "DATABASE_URL appears to contain placeholder values. "
+                "Replace DATABASE_URL in backend/.env or environment variables "
+                "with your hosted Neon Postgres connection string."
+            )
+
         return value
 
     @property
     def cors_origins_list(self) -> List[str]:
-        if self.CORS_ORIGINS.strip() == "*":
-            return ["*"]
-        import json
-        if self.CORS_ORIGINS.startswith('[') and self.CORS_ORIGINS.endswith(']'):
-            try:
-                return json.loads(self.CORS_ORIGINS)
-            except Exception:
-                pass
-        return [origin.strip() for origin in self.CORS_ORIGINS.split(",") if origin.strip()]
+        return [
+            origin.strip()
+            for origin in self.CORS_ORIGINS.split(",")
+            if origin.strip()
+        ]
 
     @property
     def database_url_info(self) -> str:
         if not self.DATABASE_URL:
             return "DATABASE_URL is not configured"
+
         parsed = make_url(self.DATABASE_URL)
+
         host = parsed.host or "unknown-host"
         database = parsed.database or "unknown-db"
         port = f":{parsed.port}" if parsed.port else ""
+
         return f"{host}{port}/{database}"
 
     model_config = SettingsConfigDict(

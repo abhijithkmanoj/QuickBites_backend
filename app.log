@@ -12294,3 +12294,32 @@
 2026-06-04 14:56:35 [INFO] app.middleware: GET /api/v1/restaurants 200 1210.41ms
 2026-06-04 14:56:41 [INFO] app.middleware: GET /api/v1/restaurants 200 1327.92ms
 2026-06-04 14:56:42 [INFO] app.middleware: GET /api/v1/restaurants 200 1312.37ms
+2026-06-04 15:25:08 [INFO] app: Logging configured
+2026-06-04 15:26:28 [INFO] app.middleware: OPTIONS /api/v1/auth/me 200 5.56ms
+2026-06-04 15:26:38 [INFO] app: Logging configured
+2026-06-04 15:26:38 [INFO] app.middleware: GET /api/v1/auth/me 401 16.32ms
+2026-06-04 15:26:38 [WARNING] app.monitoring: request_error /api/v1/auth/me -> 401 | Client or server error
+2026-06-04 15:26:38 [INFO] app.middleware: GET /api/v1/auth/me 401 19.44ms
+2026-06-04 15:26:38 [WARNING] app.monitoring: request_error /api/v1/auth/me -> 401 | Client or server error
+2026-06-04 15:26:38 [INFO] app.middleware: GET /api/v1/auth/me 401 20.47ms
+2026-06-04 15:26:38 [WARNING] app.monitoring: request_error /api/v1/auth/me -> 401 | Client or server error
+2026-06-04 15:28:01 [INFO] app.middleware: OPTIONS /api/v1/auth/me 200 13.36ms
+2026-06-04 15:28:01 [INFO] app.middleware: OPTIONS /api/v1/auth/me 200 28.28ms
+2026-06-04 15:28:01 [INFO] app.middleware: GET /api/v1/auth/me 401 55.80ms
+2026-06-04 15:28:01 [WARNING] app.monitoring: request_error /api/v1/auth/me -> 401 | Client or server error
+2026-06-04 15:28:01 [INFO] app.middleware: OPTIONS /api/v1/auth/refresh 200 1.02ms
+2026-06-04 15:28:01 [INFO] app.middleware: GET /api/v1/auth/me 401 8.58ms
+2026-06-04 15:28:01 [WARNING] app.monitoring: request_error /api/v1/auth/me -> 401 | Client or server error
+2026-06-04 15:28:02 [INFO] app.middleware: POST /api/v1/auth/refresh 401 57.65ms
+2026-06-04 15:28:02 [WARNING] app.monitoring: request_error /api/v1/auth/refresh -> 401 | Client or server error
+2026-06-04 15:28:02 [INFO] app.middleware: POST /api/v1/auth/refresh 401 8.40ms
+2026-06-04 15:28:02 [WARNING] app.monitoring: request_error /api/v1/auth/refresh -> 401 | Client or server error
+2026-06-04 15:32:24 [INFO] app: Logging configured
+2026-06-04 15:34:12 [INFO] app: Logging configured
+2026-06-04 15:35:33 [INFO] app: Logging configured
+2026-06-04 15:35:51 [INFO] app: Logging configured
+2026-06-04 15:43:16 [INFO] app.middleware: OPTIONS /api/v1/auth/login 200 32.44ms
+2026-06-04 15:43:23 [INFO] app: Logging configured
+2026-06-04 15:43:31 [INFO] app.middleware: OPTIONS /api/v1/auth/login 200 0.00ms
+2026-06-04 19:03:11 [INFO] app: Logging configured
+2026-06-04 19:49:42 [INFO] app: Logging configured
