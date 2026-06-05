@@ -3,6 +3,7 @@ from sqlalchemy import or_
 from sqlalchemy.orm import Session
 
 from app.db.models.restaurant import Restaurant
+from app.db.models.restaurant_owner_profile import RestaurantOwnerProfile
 from app.schemas.restaurant import RestaurantCreate, RestaurantUpdate
 
 
@@ -28,6 +29,16 @@ def get_restaurants(
     active: bool = True,
 ) -> list[Restaurant]:
     query = db.query(Restaurant).filter(Restaurant.is_active == active)
+    if active:
+        query = query.outerjoin(
+            RestaurantOwnerProfile,
+            Restaurant.owner_id == RestaurantOwnerProfile.user_id,
+        ).filter(
+            or_(
+                Restaurant.owner_id == None,
+                RestaurantOwnerProfile.verification_status == 'approved',
+            )
+        )
     if search:
         search_pattern = f"%{search}%"
         query = query.filter(
@@ -52,7 +63,7 @@ def get_nearby_restaurants(
     limit: int = 100,
 ) -> list[Restaurant]:
     degree_radius = radius_km / 111.0
-    return (
+    query = (
         db.query(Restaurant)
         .filter(
             Restaurant.is_active == True,
@@ -61,10 +72,17 @@ def get_nearby_restaurants(
             Restaurant.latitude.between(latitude - degree_radius, latitude + degree_radius),
             Restaurant.longitude.between(longitude - degree_radius, longitude + degree_radius),
         )
-        .offset(skip)
-        .limit(limit)
-        .all()
     )
+    query = query.outerjoin(
+        RestaurantOwnerProfile,
+        Restaurant.owner_id == RestaurantOwnerProfile.user_id,
+    ).filter(
+        or_(
+            Restaurant.owner_id == None,
+            RestaurantOwnerProfile.verification_status == 'approved',
+        )
+    )
+    return query.offset(skip).limit(limit).all()
 
 
 def get_restaurants_by_owner(db: Session, owner_id: str | uuid.UUID) -> list[Restaurant]:

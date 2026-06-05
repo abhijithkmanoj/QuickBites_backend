@@ -1,9 +1,7 @@
 from app.db.base import Base
 from app.db.models.user import User
 from app.db.session import engine, SessionLocal
-from passlib.context import CryptContext
-
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+from app.core.security import get_password_hash
 
 
 def create_database():
@@ -18,7 +16,7 @@ def seed_initial_data():
                 name="Admin User",
                 email="admin@quickbites.local",
                 phone="0000000000",
-                password_hash=pwd_context.hash("ChangeMe123!"),
+                password_hash=get_password_hash("ChangeMe123!"),
                 role="admin",
                 is_active=True,
             )

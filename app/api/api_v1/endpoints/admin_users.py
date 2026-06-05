@@ -10,12 +10,15 @@ from app.core.roles import Role
 from app.crud.user import get_user, list_users
 from app.crud.review import get_review as get_review_by_id, delete_review as delete_review_crud
 from app.crud.coupon import create_coupon, get_coupon, get_coupons, update_coupon, delete_coupon as delete_coupon_crud
-from app.crud.restaurant import get_restaurant
+from app.crud.restaurant import get_restaurant, get_restaurants, get_restaurants_by_owner
+from app.crud.restaurant_owner_profile import get_owner_profile, update_verification_status
 from app.crud.delivery_partner import get_delivery_partner_by_user
 from app.crud.order import update_order_status
 from app.services import realtime as realtime_service
 from app.db.models.coupon import Coupon
+from app.schemas.restaurant_owner_profile import VerificationStatus
 from app.db.models.delivery_partner import DeliveryPartner
+from app.db.models.restaurant_owner_profile import RestaurantOwnerProfile
 from app.db.models.user import User
 from app.db.models.restaurant import Restaurant
 from app.db.models.review import Review
@@ -221,6 +224,70 @@ def reject_restaurant(
     db.commit()
     db.refresh(restaurant)
     return restaurant
+
+
+@router.get("/owners", summary="List restaurant owner profiles")
+def list_owner_profiles(
+    skip: int = 0,
+    limit: int = 50,
+    verification_status: str | None = Query(None, description="Filter by verification status"),
+    current_user: User = Depends(require_roles(Role.admin)),
+    db: Session = Depends(get_db),
+):
+    query = db.query(RestaurantOwnerProfile)
+    if verification_status:
+        query = query.filter(RestaurantOwnerProfile.verification_status == verification_status)
+    profiles = query.offset(skip).limit(limit).all()
+    return [
+        {
+            "id": str(profile.id),
+            "user_id": str(profile.user_id),
+            "business_name": profile.business_name,
+            "verification_status": profile.verification_status,
+            "rejection_reason": profile.rejection_reason,
+            "verified_at": profile.verified_at.isoformat() if profile.verified_at else None,
+        }
+        for profile in profiles
+    ]
+
+
+@router.patch("/owners/{owner_id}/approve", summary="Approve a restaurant owner")
+def approve_restaurant_owner(
+    owner_id: str,
+    current_user: User = Depends(require_roles(Role.admin)),
+    db: Session = Depends(get_db),
+):
+    owner_profile = get_owner_profile(db, owner_id)
+    if not owner_profile:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Owner profile not found.")
+    updated_profile = update_verification_status(db, owner_profile, VerificationStatus.approved)
+    return {
+        "id": str(updated_profile.id),
+        "user_id": str(updated_profile.user_id),
+        "verification_status": updated_profile.verification_status,
+        "rejection_reason": updated_profile.rejection_reason,
+        "verified_at": updated_profile.verified_at.isoformat() if updated_profile.verified_at else None,
+    }
+
+
+@router.patch("/owners/{owner_id}/reject", summary="Reject a restaurant owner")
+def reject_restaurant_owner(
+    owner_id: str,
+    reason: str | None = Body(default=None, embed=True),
+    current_user: User = Depends(require_roles(Role.admin)),
+    db: Session = Depends(get_db),
+):
+    owner_profile = get_owner_profile(db, owner_id)
+    if not owner_profile:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Owner profile not found.")
+    updated_profile = update_verification_status(db, owner_profile, VerificationStatus.rejected, reason)
+    return {
+        "id": str(updated_profile.id),
+        "user_id": str(updated_profile.user_id),
+        "verification_status": updated_profile.verification_status,
+        "rejection_reason": updated_profile.rejection_reason,
+        "verified_at": updated_profile.verified_at.isoformat() if updated_profile.verified_at else None,
+    }
 
 
 @router.patch("/restaurants/{restaurant_id}/suspend", summary="Suspend a restaurant")

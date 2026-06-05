@@ -1,19 +1,28 @@
 """Create restaurant_owner_profiles table for owner verification
 
 Revision ID: a1b2c3d4e5f7
-Revises: add_user_profile_fields
+Revises: a1b2c3d4e5f6
 Create Date: 2025-01-01 00:00:00.000000
 """
 
+from typing import Sequence, Union
 from alembic import op
 import sqlalchemy as sa
+from sqlalchemy.dialects.postgresql import UUID
+
+
+# revision identifiers, used by Alembic.
+revision: str = "a1b2c3d4e5f7"
+down_revision: Union[str, None] = "a1b2c3d4e5f6"
+branch_labels: Union[str, Sequence[str], None] = None
+depends_on: Union[str, Sequence[str], None] = None
 
 
 def upgrade():
     op.create_table(
         "restaurant_owner_profiles",
-        sa.Column("id", sa.String(36), primary_key=True),
-        sa.Column("user_id", sa.String(36), sa.ForeignKey("users.id", ondelete="CASCADE"), nullable=False, unique=True),
+        sa.Column("id", UUID(as_uuid=True), primary_key=True, nullable=False),
+        sa.Column("user_id", UUID(as_uuid=True), sa.ForeignKey("users.id", ondelete="CASCADE"), nullable=False, unique=True),
         sa.Column("business_name", sa.String(255), nullable=False),
         sa.Column("gstin", sa.String(15), nullable=True),
         sa.Column("fssai_license_number", sa.String(14), nullable=True),

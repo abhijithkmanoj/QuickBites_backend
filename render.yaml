@@ -30,7 +30,7 @@ services:
       - key: DEBUG
         value: false
       - key: CORS_ORIGINS
-        value: https://quickbites.vercel.app,https://quickbites.com
+        value: https://quickbites.vercel.app,https://quickbites.com,https://quick-bites-food.vercel.app
     healthCheckPath: /healthz
     autoDeploy: true
 

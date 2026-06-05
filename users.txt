@@ -1,0 +1,16 @@
+Customer:
+
+Email: tester@quickbites.local
+Password: Test1234!
+
+
+
+Restaurant owner:
+
+Email: owner@quickbites.local
+Password: Owner1234!
+
+Admin login
+
+Email: admin@quickbites.local
+Password: ChangeMe123!

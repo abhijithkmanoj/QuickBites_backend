@@ -14,6 +14,7 @@ from app.crud.restaurant import (
     get_restaurants_by_owner,
     update_restaurant,
 )
+from app.crud.restaurant_owner_profile import get_owner_profile
 from app.db.models.order import Order
 from app.db.models.restaurant import Restaurant
 from app.db.models.user import User
@@ -121,6 +122,12 @@ def create_restaurant_endpoint(
     db: Session = Depends(get_db),
 ):
     if current_user.role == Role.restaurant_owner.value:
+        owner_profile = get_owner_profile(db, current_user.id)
+        if not owner_profile or owner_profile.verification_status != 'approved':
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Restaurant owner account not verified. Complete onboarding and wait for approval.",
+            )
         restaurant_in.owner_id = str(current_user.id)
     elif current_user.role == Role.admin.value and restaurant_in.owner_id is None:
         raise HTTPException(
