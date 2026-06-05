@@ -27,9 +27,7 @@ class Settings(BaseSettings):
     # Must be provided from .env
     CORS_ORIGINS: str = Field(...)
 
-    REDIS_URL: str = "redis://localhost:6379/0"
     CACHE_PREFIX: str = "quickbites:"
-    USE_REDIS_CACHE: bool = False
 
     SMTP_HOST: Optional[str] = None
     SMTP_PORT: int = 587
@@ -58,20 +56,6 @@ class Settings(BaseSettings):
             "no",
             "off",
             "release",
-        )
-
-    @field_validator("USE_REDIS_CACHE", mode="before")
-    @classmethod
-    def coerce_use_redis(cls, value):
-        if isinstance(value, bool):
-            return value
-        if value is None:
-            return False
-        return str(value).strip().lower() in (
-            "true",
-            "1",
-            "yes",
-            "on",
         )
 
     @field_validator("CORS_ORIGINS")

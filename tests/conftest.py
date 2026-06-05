@@ -1,20 +1,15 @@
 import os
-from pathlib import Path
 
 import pytest
 from fastapi.testclient import TestClient
 
-# Use a temporary file-backed SQLite database for tests to ensure isolation
-test_db_path = Path(__file__).resolve().parents[1] / f"test_{os.getpid()}.db"
-TEST_DATABASE_URL = f"sqlite:///{test_db_path.as_posix()}"
-os.environ["DATABASE_URL"] = TEST_DATABASE_URL
+DATABASE_URL = os.environ.get("TEST_DATABASE_URL") or os.environ.get("DATABASE_URL")
+if not DATABASE_URL:
+    raise RuntimeError("DATABASE_URL (or TEST_DATABASE_URL) must be provided before running backend tests.")
+if DATABASE_URL.lower().startswith("sqlite"):
+    raise RuntimeError("SQLite is not supported for tests. Use a hosted PostgreSQL DATABASE_URL.")
 
-# Remove any existing test DB file from previous runs
-if test_db_path.exists():
-    try:
-        test_db_path.unlink()
-    except PermissionError:
-        pass
+os.environ["DATABASE_URL"] = DATABASE_URL
 
 from app.main import app
 from app.api import deps

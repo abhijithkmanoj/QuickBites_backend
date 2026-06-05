@@ -13,4 +13,5 @@ def test_cache_set_disabled_when_flag_off():
 
 
 def test_cache_disabled_by_default():
-    assert Settings().USE_REDIS_CACHE is False
+    assert cache.set("another_key", {"hello": "again"}, ttl_seconds=60) is False
+    assert cache.get("another_key") is None

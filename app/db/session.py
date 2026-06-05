@@ -15,13 +15,13 @@ if not settings.DATABASE_URL or not settings.DATABASE_URL.strip():
 
 logger.info("Database connection target: %s", settings.database_url_info)
 
-connect_args = {}
-if settings.DATABASE_URL.startswith("sqlite"):
-    connect_args = {"check_same_thread": False}
+if settings.DATABASE_URL.lower().startswith("sqlite"):
+    raise RuntimeError(
+        "SQLite is not supported. Use a hosted PostgreSQL DATABASE_URL instead."
+    )
 
 engine = create_engine(
     settings.DATABASE_URL,
-    connect_args=connect_args,
     pool_pre_ping=True,
     future=True,
 )

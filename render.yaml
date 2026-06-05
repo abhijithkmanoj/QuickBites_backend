@@ -14,11 +14,6 @@ services:
         fromDatabase:
           name: quickbites-db
           property: connectionString
-      - key: REDIS_URL
-        fromService:
-          name: quickbites-redis
-          type: redis
-          property: connectionString
       - key: SECRET_KEY
         generateValue: true
       - key: ACCESS_TOKEN_EXPIRE_MINUTES
@@ -33,11 +28,6 @@ services:
         value: https://quickbites.vercel.app,https://quickbites.com,https://quick-bites-food.vercel.app
     healthCheckPath: /healthz
     autoDeploy: true
-
-  - type: redis
-    name: quickbites-redis
-    ipAllowList: []
-    plan: free
 
 databases:
   - name: quickbites-db
