@@ -15,8 +15,8 @@ app = FastAPI(
     title=settings.APP_NAME,
     version="0.1.0",
     openapi_url=f"{settings.API_V1_STR}/openapi.json",
-    docs_url="/docs" if settings.DEBUG else None,
-    redoc_url="/redoc" if settings.DEBUG else None,
+    docs_url="/docs" if settings.ENABLE_DOCS else None,
+    redoc_url="/redoc" if settings.ENABLE_DOCS else None,
 )
 
 app.add_middleware(
@@ -50,3 +50,14 @@ app.mount("/socket.io", socket_app)
 @app.get("/healthz", include_in_schema=False)
 def health_probe():
     return {"status": "ok"}
+
+
+@app.get("/debug")
+def debug():
+    return {
+        "debug": settings.DEBUG,
+        "environment": settings.ENVIRONMENT,
+        "enable_docs": settings.ENABLE_DOCS,
+        "docs_url": app.docs_url,
+        "openapi_url": app.openapi_url,
+    }

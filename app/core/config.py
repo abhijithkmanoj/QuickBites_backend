@@ -13,6 +13,7 @@ class Settings(BaseSettings):
     APP_NAME: str = "QuickBites Backend"
     ENVIRONMENT: str = "development"
     DEBUG: bool = True
+    ENABLE_DOCS: bool = True
     API_V1_STR: str = "/api/v1"
 
     DATABASE_URL: Optional[str] = None
@@ -56,6 +57,20 @@ class Settings(BaseSettings):
             "no",
             "off",
             "release",
+        )
+
+    @field_validator("ENABLE_DOCS", mode="before")
+    @classmethod
+    def coerce_enable_docs(cls, value):
+        if isinstance(value, bool):
+            return value
+        if value is None:
+            return True
+        return str(value).strip().lower() not in (
+            "false",
+            "0",
+            "no",
+            "off",
         )
 
     @field_validator("CORS_ORIGINS")
