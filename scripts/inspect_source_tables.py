@@ -10,6 +10,9 @@ if not source_match:
     raise SystemExit('DATABASE_SOURCE_URL not found in backend/.env')
 source_url = source_match.group(1).strip()
 print('Source DB:', source_url)
+# Ensure Psycopg v3 driver (not psycopg2)
+if source_url.startswith('postgresql://'):
+    source_url = source_url.replace('postgresql://', 'postgresql+psycopg://', 1)
 engine = create_engine(source_url, future=True)
 inspector = inspect(engine)
 print('source tables:', inspector.get_table_names())

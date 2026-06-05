@@ -17,6 +17,10 @@ if not match:
 url = match.group(1).strip()
 print('Using DATABASE_URL:', url)
 
+# Ensure Psycopg v3 driver (not psycopg2)
+if url.startswith('postgresql://'):
+    url = url.replace('postgresql://', 'postgresql+psycopg://', 1)
+
 # Import application metadata after adding backend root to sys.path
 sys.path.append(str(BASE_DIR))
 from app.db.base import Base

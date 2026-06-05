@@ -10,6 +10,9 @@ if not match:
     raise SystemExit('DATABASE_URL not found in backend/.env')
 url = match.group(1).strip()
 print('Using DATABASE_URL:', url)
+# Ensure Psycopg v3 driver (not psycopg2)
+if url.startswith('postgresql://'):
+    url = url.replace('postgresql://', 'postgresql+psycopg://', 1)
 engine = create_engine(url, future=True)
 inspector = inspect(engine)
 print('tables:', inspector.get_table_names())

@@ -9,6 +9,9 @@ source_match = re.search(r'^DATABASE_SOURCE_URL=(.+)$', text_content, flags=re.M
 if not source_match:
     raise SystemExit('DATABASE_SOURCE_URL not found in backend/.env')
 source_url = source_match.group(1).strip()
+# Ensure Psycopg v3 driver (not psycopg2)
+if source_url.startswith('postgresql://'):
+    source_url = source_url.replace('postgresql://', 'postgresql+psycopg://', 1)
 engine = create_engine(source_url, future=True)
 with engine.connect() as conn:
     result = conn.execute(text("SELECT table_schema, table_name FROM information_schema.tables WHERE table_type='BASE TABLE' ORDER BY table_schema, table_name"))

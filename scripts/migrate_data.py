@@ -39,8 +39,14 @@ copy_order = [
     'user_favorites',
 ]
 
-source_engine = create_engine(SOURCE_URL, future=True)
-target_engine = create_engine(TARGET_URL, future=True)
+source_engine = create_engine(
+    SOURCE_URL.replace("postgresql://", "postgresql+psycopg://") if SOURCE_URL.startswith("postgresql://") else SOURCE_URL,
+    future=True,
+)
+target_engine = create_engine(
+    TARGET_URL.replace("postgresql://", "postgresql+psycopg://") if TARGET_URL.startswith("postgresql://") else TARGET_URL,
+    future=True,
+)
 
 try:
     with source_engine.connect() as source_conn, target_engine.connect() as target_conn:
