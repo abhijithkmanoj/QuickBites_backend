@@ -21359,3 +21359,256 @@ google.genai.errors.ClientError: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429,
 2026-06-09 14:40:58 [INFO] app.middleware: GET /api/v1/health 200 15.73ms
 2026-06-09 14:41:17 [INFO] app.middleware: POST /api/v1/auth/login 200 7554.42ms
 2026-06-09 14:41:24 [INFO] app.middleware: POST /api/v1/auth/login 200 3011.25ms
+2026-06-09 14:42:20 [INFO] app: Logging configured
+2026-06-09 14:42:21 [INFO] app.middleware: GET /api/v1/health 200 4.04ms
+2026-06-09 22:11:38 [INFO] app.middleware: GET /api/v1/health 200 73.82ms
+2026-06-09 22:12:08 [INFO] app.middleware: OPTIONS /api/v1/auth/login 200 0.00ms
+2026-06-09 22:12:13 [INFO] app.middleware: OPTIONS /api/v1/auth/login 200 0.00ms
+2026-06-09 22:12:45 [INFO] app.middleware: GET /api/v1/promotions/active 200 8324.76ms
+2026-06-09 22:12:47 [INFO] app.middleware: GET /api/v1/promotions/active 200 1721.05ms
+2026-06-09 22:13:10 [INFO] app.middleware: POST /api/v1/auth/login 200 4340.31ms
+2026-06-09 22:13:10 [INFO] app.middleware: OPTIONS /api/v1/auth/me 200 0.00ms
+2026-06-09 22:13:11 [INFO] app.middleware: GET /api/v1/auth/me 200 1564.73ms
+2026-06-09 22:13:11 [INFO] engineio.server: a-VoBQlICsrljwOHAAAA: Sending packet OPEN data {'sid': 'a-VoBQlICsrljwOHAAAA', 'upgrades': [], 'pingTimeout': 20000, 'pingInterval': 25000}
+2026-06-09 22:13:11 [INFO] engineio.server: a-VoBQlICsrljwOHAAAA: Received request to upgrade to websocket
+2026-06-09 22:13:11 [INFO] engineio.server: a-VoBQlICsrljwOHAAAA: Upgrade to websocket successful
+2026-06-09 22:13:12 [INFO] app.middleware: OPTIONS /api/v1/notifications/ 200 12.52ms
+2026-06-09 22:13:12 [INFO] engineio.server: oYSWF-M5kJtuT5NWAAAB: Sending packet OPEN data {'sid': 'oYSWF-M5kJtuT5NWAAAB', 'upgrades': [], 'pingTimeout': 20000, 'pingInterval': 25000}
+2026-06-09 22:13:12 [INFO] engineio.server: oYSWF-M5kJtuT5NWAAAB: Received request to upgrade to websocket
+2026-06-09 22:13:12 [INFO] engineio.server: oYSWF-M5kJtuT5NWAAAB: Upgrade to websocket successful
+2026-06-09 22:13:12 [INFO] app.middleware: OPTIONS /api/v1/notifications/ 200 27.97ms
+2026-06-09 22:13:12 [INFO] app.middleware: OPTIONS /api/v1/promotions/active 200 6.06ms
+2026-06-09 22:13:12 [INFO] app.middleware: OPTIONS /api/v1/promotions/active 200 5.41ms
+2026-06-09 22:13:12 [INFO] engineio.server: oYSWF-M5kJtuT5NWAAAB: Received packet MESSAGE data 0{"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjNDMzN2ZjMS1hZTdjLTQ2ZmUtOTJmZC1mOTUzZjY4ZGExNWEiLCJleHAiOjE3ODEwMjUxODcsInR5cGUiOiJhY2Nlc3MiLCJqdGkiOiIzZmUyMzFmZC0wZmQ1LTQyYjUtYjhkZi05MDNiNTM1MjkxY2QifQ.YDaev_oJjB0lrnz-vtjJT12EMG6zdtrf-Md1CiKeVQI"}
+2026-06-09 22:13:13 [INFO] socketio.server: H0hMRlL0OQx4vLR_AAAC is entering room user:c4337fc1-ae7c-46fe-92fd-f953f68da15a [/]
+2026-06-09 22:13:13 [INFO] app.socket_server: [Socket.IO] Connection established: H0hMRlL0OQx4vLR_AAAC -> c4337fc1-ae7c-46fe-92fd-f953f68da15a
+2026-06-09 22:13:13 [INFO] engineio.server: oYSWF-M5kJtuT5NWAAAB: Sending packet MESSAGE data 0{"sid":"H0hMRlL0OQx4vLR_AAAC"}
+2026-06-09 22:13:17 [INFO] app.middleware: GET /api/v1/promotions/active 200 3682.63ms
+2026-06-09 22:13:18 [INFO] app.middleware: GET /api/v1/notifications/ 200 4801.04ms
+2026-06-09 22:13:19 [INFO] app.middleware: GET /api/v1/promotions/active 200 1940.59ms
+2026-06-09 22:13:21 [INFO] app.middleware: GET /api/v1/notifications/ 200 3066.22ms
+2026-06-09 22:13:33 [INFO] app.middleware: OPTIONS /api/v1/ai-chat 200 0.00ms
+2026-06-09 22:13:37 [INFO] engineio.server: oYSWF-M5kJtuT5NWAAAB: Sending packet PING data None
+2026-06-09 22:13:37 [INFO] engineio.server: oYSWF-M5kJtuT5NWAAAB: Received packet PONG data 
+2026-06-09 22:13:41 [INFO] httpx: HTTP Request: POST https://openrouter.ai/api/v1/chat/completions "HTTP/1.1 200 OK"
+2026-06-09 22:13:43 [INFO] app.middleware: POST /api/v1/ai-chat 200 10312.60ms
+2026-06-09 22:14:02 [INFO] engineio.server: oYSWF-M5kJtuT5NWAAAB: Sending packet PING data None
+2026-06-09 22:14:02 [INFO] engineio.server: oYSWF-M5kJtuT5NWAAAB: Received packet PONG data 
+2026-06-09 22:14:27 [INFO] engineio.server: oYSWF-M5kJtuT5NWAAAB: Sending packet PING data None
+2026-06-09 22:14:27 [INFO] engineio.server: oYSWF-M5kJtuT5NWAAAB: Received packet PONG data 
+2026-06-09 22:14:52 [INFO] engineio.server: oYSWF-M5kJtuT5NWAAAB: Sending packet PING data None
+2026-06-09 22:14:52 [INFO] engineio.server: oYSWF-M5kJtuT5NWAAAB: Received packet PONG data 
+2026-06-09 22:15:17 [INFO] engineio.server: oYSWF-M5kJtuT5NWAAAB: Sending packet PING data None
+2026-06-09 22:15:17 [INFO] engineio.server: oYSWF-M5kJtuT5NWAAAB: Received packet PONG data 
+2026-06-09 22:15:42 [INFO] engineio.server: oYSWF-M5kJtuT5NWAAAB: Sending packet PING data None
+2026-06-09 22:15:42 [INFO] engineio.server: oYSWF-M5kJtuT5NWAAAB: Received packet PONG data 
+2026-06-09 22:16:07 [INFO] engineio.server: oYSWF-M5kJtuT5NWAAAB: Sending packet PING data None
+2026-06-09 22:16:07 [INFO] engineio.server: oYSWF-M5kJtuT5NWAAAB: Received packet PONG data 
+2026-06-09 22:16:32 [INFO] engineio.server: oYSWF-M5kJtuT5NWAAAB: Sending packet PING data None
+2026-06-09 22:16:32 [INFO] engineio.server: oYSWF-M5kJtuT5NWAAAB: Received packet PONG data 
+2026-06-09 22:16:57 [INFO] engineio.server: oYSWF-M5kJtuT5NWAAAB: Sending packet PING data None
+2026-06-09 22:16:57 [INFO] engineio.server: oYSWF-M5kJtuT5NWAAAB: Received packet PONG data 
+2026-06-09 22:17:22 [INFO] engineio.server: oYSWF-M5kJtuT5NWAAAB: Sending packet PING data None
+2026-06-09 22:17:22 [INFO] engineio.server: oYSWF-M5kJtuT5NWAAAB: Received packet PONG data 
+2026-06-09 22:17:47 [INFO] engineio.server: oYSWF-M5kJtuT5NWAAAB: Sending packet PING data None
+2026-06-09 22:17:47 [INFO] engineio.server: oYSWF-M5kJtuT5NWAAAB: Received packet PONG data 
+2026-06-09 22:18:12 [INFO] engineio.server: oYSWF-M5kJtuT5NWAAAB: Sending packet PING data None
+2026-06-09 22:18:12 [INFO] engineio.server: oYSWF-M5kJtuT5NWAAAB: Received packet PONG data 
+2026-06-09 22:18:37 [INFO] engineio.server: oYSWF-M5kJtuT5NWAAAB: Sending packet PING data None
+2026-06-09 22:18:37 [INFO] engineio.server: oYSWF-M5kJtuT5NWAAAB: Received packet PONG data 
+2026-06-09 22:19:02 [INFO] engineio.server: oYSWF-M5kJtuT5NWAAAB: Sending packet PING data None
+2026-06-09 22:19:02 [INFO] engineio.server: oYSWF-M5kJtuT5NWAAAB: Received packet PONG data 
+2026-06-09 22:19:27 [INFO] engineio.server: oYSWF-M5kJtuT5NWAAAB: Sending packet PING data None
+2026-06-09 22:19:27 [INFO] engineio.server: oYSWF-M5kJtuT5NWAAAB: Received packet PONG data 
+2026-06-09 22:19:52 [INFO] engineio.server: oYSWF-M5kJtuT5NWAAAB: Sending packet PING data None
+2026-06-09 22:19:52 [INFO] engineio.server: oYSWF-M5kJtuT5NWAAAB: Received packet PONG data 
+2026-06-09 22:20:17 [INFO] engineio.server: oYSWF-M5kJtuT5NWAAAB: Sending packet PING data None
+2026-06-09 22:20:17 [INFO] engineio.server: oYSWF-M5kJtuT5NWAAAB: Received packet PONG data 
+2026-06-09 22:20:42 [INFO] engineio.server: oYSWF-M5kJtuT5NWAAAB: Sending packet PING data None
+2026-06-09 22:20:42 [INFO] engineio.server: oYSWF-M5kJtuT5NWAAAB: Received packet PONG data 
+2026-06-09 22:21:07 [INFO] engineio.server: oYSWF-M5kJtuT5NWAAAB: Sending packet PING data None
+2026-06-09 22:21:07 [INFO] engineio.server: oYSWF-M5kJtuT5NWAAAB: Received packet PONG data 
+2026-06-09 22:21:32 [INFO] engineio.server: oYSWF-M5kJtuT5NWAAAB: Sending packet PING data None
+2026-06-09 22:21:32 [INFO] engineio.server: oYSWF-M5kJtuT5NWAAAB: Received packet PONG data 
+2026-06-09 22:21:57 [INFO] engineio.server: oYSWF-M5kJtuT5NWAAAB: Sending packet PING data None
+2026-06-09 22:21:57 [INFO] engineio.server: oYSWF-M5kJtuT5NWAAAB: Received packet PONG data 
+2026-06-09 22:22:22 [INFO] engineio.server: oYSWF-M5kJtuT5NWAAAB: Sending packet PING data None
+2026-06-09 22:22:22 [INFO] engineio.server: oYSWF-M5kJtuT5NWAAAB: Received packet PONG data 
+2026-06-09 22:22:47 [INFO] engineio.server: oYSWF-M5kJtuT5NWAAAB: Sending packet PING data None
+2026-06-09 22:22:47 [INFO] engineio.server: oYSWF-M5kJtuT5NWAAAB: Received packet PONG data 
+2026-06-09 22:23:12 [INFO] engineio.server: oYSWF-M5kJtuT5NWAAAB: Sending packet PING data None
+2026-06-09 22:23:12 [INFO] engineio.server: oYSWF-M5kJtuT5NWAAAB: Received packet PONG data 
+2026-06-09 22:23:37 [INFO] engineio.server: oYSWF-M5kJtuT5NWAAAB: Sending packet PING data None
+2026-06-09 22:23:37 [INFO] engineio.server: oYSWF-M5kJtuT5NWAAAB: Received packet PONG data 
+2026-06-09 22:24:02 [INFO] engineio.server: oYSWF-M5kJtuT5NWAAAB: Sending packet PING data None
+2026-06-09 22:24:02 [INFO] engineio.server: oYSWF-M5kJtuT5NWAAAB: Received packet PONG data 
+2026-06-09 22:24:27 [INFO] engineio.server: oYSWF-M5kJtuT5NWAAAB: Sending packet PING data None
+2026-06-09 22:24:27 [INFO] engineio.server: oYSWF-M5kJtuT5NWAAAB: Received packet PONG data 
+2026-06-09 22:24:52 [INFO] engineio.server: oYSWF-M5kJtuT5NWAAAB: Sending packet PING data None
+2026-06-09 22:24:52 [INFO] engineio.server: oYSWF-M5kJtuT5NWAAAB: Received packet PONG data 
+2026-06-09 22:25:17 [INFO] engineio.server: oYSWF-M5kJtuT5NWAAAB: Sending packet PING data None
+2026-06-09 22:25:17 [INFO] engineio.server: oYSWF-M5kJtuT5NWAAAB: Received packet PONG data 
+2026-06-09 22:25:42 [INFO] engineio.server: oYSWF-M5kJtuT5NWAAAB: Sending packet PING data None
+2026-06-09 22:25:42 [INFO] engineio.server: oYSWF-M5kJtuT5NWAAAB: Received packet PONG data 
+2026-06-09 22:26:07 [INFO] engineio.server: oYSWF-M5kJtuT5NWAAAB: Sending packet PING data None
+2026-06-09 22:26:07 [INFO] engineio.server: oYSWF-M5kJtuT5NWAAAB: Received packet PONG data 
+2026-06-09 22:30:02 [INFO] engineio.server: dBZvlKXZpSkCiEaFAAAD: Sending packet OPEN data {'sid': 'dBZvlKXZpSkCiEaFAAAD', 'upgrades': [], 'pingTimeout': 20000, 'pingInterval': 25000}
+2026-06-09 22:30:02 [INFO] engineio.server: dBZvlKXZpSkCiEaFAAAD: Received request to upgrade to websocket
+2026-06-09 22:30:02 [INFO] engineio.server: dBZvlKXZpSkCiEaFAAAD: Upgrade to websocket successful
+2026-06-09 22:30:04 [INFO] app.middleware: OPTIONS /api/v1/auth/me 200 346.29ms
+2026-06-09 22:30:04 [INFO] app.middleware: OPTIONS /api/v1/auth/me 200 72.85ms
+2026-06-09 22:30:08 [INFO] app.middleware: GET /api/v1/auth/me 200 4351.72ms
+2026-06-09 22:30:08 [INFO] engineio.server: m1l1yvlikO_wGiQ-AAAE: Sending packet OPEN data {'sid': 'm1l1yvlikO_wGiQ-AAAE', 'upgrades': [], 'pingTimeout': 20000, 'pingInterval': 25000}
+2026-06-09 22:30:08 [INFO] engineio.server: m1l1yvlikO_wGiQ-AAAE: Received request to upgrade to websocket
+2026-06-09 22:30:08 [INFO] engineio.server: m1l1yvlikO_wGiQ-AAAE: Upgrade to websocket successful
+2026-06-09 22:30:08 [INFO] app.middleware: OPTIONS /api/v1/notifications/ 200 2.99ms
+2026-06-09 22:30:08 [INFO] app.middleware: OPTIONS /api/v1/promotions/active 200 5.20ms
+2026-06-09 22:30:08 [INFO] engineio.server: m1l1yvlikO_wGiQ-AAAE: Received packet MESSAGE data 0{"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjNDMzN2ZjMS1hZTdjLTQ2ZmUtOTJmZC1mOTUzZjY4ZGExNWEiLCJleHAiOjE3ODEwMjUxODcsInR5cGUiOiJhY2Nlc3MiLCJqdGkiOiIzZmUyMzFmZC0wZmQ1LTQyYjUtYjhkZi05MDNiNTM1MjkxY2QifQ.YDaev_oJjB0lrnz-vtjJT12EMG6zdtrf-Md1CiKeVQI"}
+2026-06-09 22:30:11 [INFO] socketio.server: EWOTecbzNprIJ55eAAAF is entering room user:c4337fc1-ae7c-46fe-92fd-f953f68da15a [/]
+2026-06-09 22:30:11 [INFO] app.socket_server: [Socket.IO] Connection established: EWOTecbzNprIJ55eAAAF -> c4337fc1-ae7c-46fe-92fd-f953f68da15a
+2026-06-09 22:30:11 [INFO] engineio.server: m1l1yvlikO_wGiQ-AAAE: Sending packet MESSAGE data 0{"sid":"EWOTecbzNprIJ55eAAAF"}
+2026-06-09 22:30:11 [INFO] app.middleware: OPTIONS /api/v1/notifications/ 200 3109.71ms
+2026-06-09 22:30:11 [INFO] app.middleware: OPTIONS /api/v1/promotions/active 200 3109.71ms
+2026-06-09 22:30:12 [INFO] app.middleware: GET /api/v1/auth/me 200 3504.03ms
+2026-06-09 22:30:12 [INFO] engineio.server: m1l1yvlikO_wGiQ-AAAE: Received packet MESSAGE data 1
+2026-06-09 22:30:12 [INFO] engineio.server: _Wja3gpoczdUc3vUAAAG: Sending packet OPEN data {'sid': '_Wja3gpoczdUc3vUAAAG', 'upgrades': [], 'pingTimeout': 20000, 'pingInterval': 25000}
+2026-06-09 22:30:12 [INFO] engineio.server: _Wja3gpoczdUc3vUAAAG: Received request to upgrade to websocket
+2026-06-09 22:30:12 [INFO] engineio.server: _Wja3gpoczdUc3vUAAAG: Upgrade to websocket successful
+2026-06-09 22:30:12 [INFO] engineio.server: _Wja3gpoczdUc3vUAAAG: Received packet MESSAGE data 0{"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjNDMzN2ZjMS1hZTdjLTQ2ZmUtOTJmZC1mOTUzZjY4ZGExNWEiLCJleHAiOjE3ODEwMjUxODcsInR5cGUiOiJhY2Nlc3MiLCJqdGkiOiIzZmUyMzFmZC0wZmQ1LTQyYjUtYjhkZi05MDNiNTM1MjkxY2QifQ.YDaev_oJjB0lrnz-vtjJT12EMG6zdtrf-Md1CiKeVQI"}
+2026-06-09 22:30:13 [INFO] socketio.server: -mNFswyhEp8sUTzfAAAH is entering room user:c4337fc1-ae7c-46fe-92fd-f953f68da15a [/]
+2026-06-09 22:30:13 [INFO] app.socket_server: [Socket.IO] Connection established: -mNFswyhEp8sUTzfAAAH -> c4337fc1-ae7c-46fe-92fd-f953f68da15a
+2026-06-09 22:30:13 [INFO] engineio.server: _Wja3gpoczdUc3vUAAAG: Sending packet MESSAGE data 0{"sid":"-mNFswyhEp8sUTzfAAAH"}
+2026-06-09 22:30:13 [INFO] app.middleware: GET /api/v1/promotions/active 200 1694.13ms
+2026-06-09 22:30:14 [INFO] app.middleware: GET /api/v1/notifications/ 200 3133.29ms
+2026-06-09 22:30:15 [INFO] app.middleware: GET /api/v1/promotions/active 200 1548.49ms
+2026-06-09 22:30:18 [INFO] app.middleware: GET /api/v1/notifications/ 200 3182.54ms
+2026-06-09 22:30:37 [INFO] engineio.server: _Wja3gpoczdUc3vUAAAG: Sending packet PING data None
+2026-06-09 22:30:37 [INFO] engineio.server: _Wja3gpoczdUc3vUAAAG: Received packet PONG data 
+2026-06-09 22:31:02 [INFO] engineio.server: _Wja3gpoczdUc3vUAAAG: Sending packet PING data None
+2026-06-09 22:31:02 [INFO] engineio.server: _Wja3gpoczdUc3vUAAAG: Received packet PONG data 
+2026-06-09 22:31:27 [INFO] engineio.server: _Wja3gpoczdUc3vUAAAG: Sending packet PING data None
+2026-06-09 22:31:27 [INFO] engineio.server: _Wja3gpoczdUc3vUAAAG: Received packet PONG data 
+2026-06-09 22:31:52 [INFO] engineio.server: _Wja3gpoczdUc3vUAAAG: Sending packet PING data None
+2026-06-09 22:31:52 [INFO] engineio.server: _Wja3gpoczdUc3vUAAAG: Received packet PONG data 
+2026-06-09 22:32:07 [INFO] app.middleware: GET /api/v1/promotions/active 200 1607.36ms
+2026-06-09 22:32:09 [INFO] app.middleware: GET /api/v1/promotions/active 200 1471.44ms
+2026-06-09 22:32:12 [INFO] app.middleware: OPTIONS /api/v1/ai-chat 200 1.06ms
+2026-06-09 22:32:12 [INFO] app.middleware: POST /api/v1/ai-chat 401 28.56ms
+2026-06-09 22:32:12 [WARNING] app.monitoring: request_error /api/v1/ai-chat -> 401 | Client or server error
+2026-06-09 22:32:20 [INFO] engineio.server: _Wja3gpoczdUc3vUAAAG: Sending packet PING data None
+2026-06-09 22:32:20 [INFO] app.middleware: POST /api/v1/auth/login 200 4009.94ms
+2026-06-09 22:32:20 [INFO] engineio.server: _Wja3gpoczdUc3vUAAAG: Received packet PONG data 
+2026-06-09 22:32:20 [INFO] app.middleware: OPTIONS /api/v1/auth/me 200 0.00ms
+2026-06-09 22:32:22 [INFO] app.middleware: GET /api/v1/auth/me 200 1399.89ms
+2026-06-09 22:32:22 [INFO] engineio.server: WwEbi5lzhMtuXTGQAAAI: Sending packet OPEN data {'sid': 'WwEbi5lzhMtuXTGQAAAI', 'upgrades': [], 'pingTimeout': 20000, 'pingInterval': 25000}
+2026-06-09 22:32:22 [INFO] engineio.server: WwEbi5lzhMtuXTGQAAAI: Received request to upgrade to websocket
+2026-06-09 22:32:22 [INFO] engineio.server: WwEbi5lzhMtuXTGQAAAI: Upgrade to websocket successful
+2026-06-09 22:32:22 [INFO] app.middleware: OPTIONS /api/v1/notifications/ 200 1.91ms
+2026-06-09 22:32:22 [INFO] app.middleware: OPTIONS /api/v1/notifications/ 200 2.19ms
+2026-06-09 22:32:22 [INFO] app.middleware: OPTIONS /api/v1/promotions/active 200 8.01ms
+2026-06-09 22:32:22 [INFO] app.middleware: OPTIONS /api/v1/promotions/active 200 11.15ms
+2026-06-09 22:32:22 [INFO] engineio.server: sasYbDfhK4DVkD5CAAAJ: Sending packet OPEN data {'sid': 'sasYbDfhK4DVkD5CAAAJ', 'upgrades': [], 'pingTimeout': 20000, 'pingInterval': 25000}
+2026-06-09 22:32:22 [INFO] engineio.server: sasYbDfhK4DVkD5CAAAJ: Received request to upgrade to websocket
+2026-06-09 22:32:22 [INFO] engineio.server: sasYbDfhK4DVkD5CAAAJ: Upgrade to websocket successful
+2026-06-09 22:32:22 [INFO] engineio.server: sasYbDfhK4DVkD5CAAAJ: Received packet MESSAGE data 0{"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxZWViYzU5ZC0yNzkxLTQ3YzQtYmU1Zi0yYzgxNDkzZWQ0NWQiLCJleHAiOjE3ODEwMjYzMzgsInR5cGUiOiJhY2Nlc3MiLCJqdGkiOiJkNDFjMzhhYi1kN2UyLTQ5NjQtYTY3Ni1hYzc1MDY2NjY0MmIifQ.re2uE8RqYGMVvXfnx7s37rQnyZ0kFzlpWRRwkowCdfw"}
+2026-06-09 22:32:23 [INFO] socketio.server: 9JrB2m3-1ftqzsaVAAAK is entering room user:1eebc59d-2791-47c4-be5f-2c81493ed45d [/]
+2026-06-09 22:32:23 [INFO] app.socket_server: [Socket.IO] Connection established: 9JrB2m3-1ftqzsaVAAAK -> 1eebc59d-2791-47c4-be5f-2c81493ed45d
+2026-06-09 22:32:23 [INFO] engineio.server: sasYbDfhK4DVkD5CAAAJ: Sending packet MESSAGE data 0{"sid":"9JrB2m3-1ftqzsaVAAAK"}
+2026-06-09 22:32:25 [INFO] app.middleware: OPTIONS /api/v1/ai-chat 200 0.00ms
+2026-06-09 22:32:25 [INFO] app.middleware: GET /api/v1/notifications/ 200 3217.51ms
+2026-06-09 22:32:25 [INFO] app.middleware: GET /api/v1/promotions/active 200 3196.89ms
+2026-06-09 22:32:27 [INFO] app.middleware: GET /api/v1/promotions/active 200 2041.01ms
+2026-06-09 22:32:30 [INFO] httpx: HTTP Request: POST https://openrouter.ai/api/v1/chat/completions "HTTP/1.1 200 OK"
+2026-06-09 22:32:30 [INFO] app.middleware: GET /api/v1/notifications/ 200 5227.33ms
+2026-06-09 22:32:31 [INFO] app.middleware: POST /api/v1/ai-chat 200 5889.52ms
+2026-06-09 22:32:45 [INFO] engineio.server: _Wja3gpoczdUc3vUAAAG: Sending packet PING data None
+2026-06-09 22:32:45 [INFO] engineio.server: _Wja3gpoczdUc3vUAAAG: Received packet PONG data 
+2026-06-09 22:32:46 [INFO] httpx: HTTP Request: POST https://openrouter.ai/api/v1/chat/completions "HTTP/1.1 200 OK"
+2026-06-09 22:32:47 [INFO] app.middleware: POST /api/v1/ai-chat 200 5199.28ms
+2026-06-09 22:32:47 [INFO] engineio.server: sasYbDfhK4DVkD5CAAAJ: Sending packet PING data None
+2026-06-09 22:32:47 [INFO] engineio.server: sasYbDfhK4DVkD5CAAAJ: Received packet PONG data 
+2026-06-09 22:33:10 [INFO] engineio.server: _Wja3gpoczdUc3vUAAAG: Sending packet PING data None
+2026-06-09 22:33:10 [INFO] engineio.server: _Wja3gpoczdUc3vUAAAG: Received packet PONG data 
+2026-06-09 22:33:12 [INFO] engineio.server: sasYbDfhK4DVkD5CAAAJ: Sending packet PING data None
+2026-06-09 22:33:12 [INFO] engineio.server: sasYbDfhK4DVkD5CAAAJ: Received packet PONG data 
+2026-06-09 22:33:14 [INFO] httpx: HTTP Request: POST https://openrouter.ai/api/v1/chat/completions "HTTP/1.1 200 OK"
+2026-06-09 22:33:15 [INFO] app.middleware: POST /api/v1/ai-chat 200 6349.84ms
+2026-06-09 22:33:35 [INFO] engineio.server: _Wja3gpoczdUc3vUAAAG: Sending packet PING data None
+2026-06-09 22:33:35 [INFO] engineio.server: _Wja3gpoczdUc3vUAAAG: Received packet PONG data 
+2026-06-09 22:33:37 [INFO] engineio.server: sasYbDfhK4DVkD5CAAAJ: Sending packet PING data None
+2026-06-09 22:33:37 [INFO] engineio.server: sasYbDfhK4DVkD5CAAAJ: Received packet PONG data 
+2026-06-09 22:33:42 [INFO] httpx: HTTP Request: POST https://openrouter.ai/api/v1/chat/completions "HTTP/1.1 200 OK"
+2026-06-09 22:33:43 [INFO] app.middleware: POST /api/v1/ai-chat 200 5099.94ms
+2026-06-09 22:34:00 [INFO] engineio.server: _Wja3gpoczdUc3vUAAAG: Sending packet PING data None
+2026-06-09 22:34:00 [INFO] engineio.server: _Wja3gpoczdUc3vUAAAG: Received packet PONG data 
+2026-06-09 22:34:01 [INFO] httpx: HTTP Request: POST https://openrouter.ai/api/v1/chat/completions "HTTP/1.1 200 OK"
+2026-06-09 22:34:02 [INFO] engineio.server: sasYbDfhK4DVkD5CAAAJ: Sending packet PING data None
+2026-06-09 22:34:02 [INFO] engineio.server: sasYbDfhK4DVkD5CAAAJ: Received packet PONG data 
+2026-06-09 22:34:04 [INFO] app.middleware: POST /api/v1/ai-chat 200 6080.77ms
+2026-06-09 22:34:15 [INFO] httpx: HTTP Request: POST https://openrouter.ai/api/v1/chat/completions "HTTP/1.1 200 OK"
+2026-06-09 22:34:15 [INFO] app.middleware: POST /api/v1/ai-chat 200 5075.27ms
+2026-06-09 22:34:25 [INFO] engineio.server: _Wja3gpoczdUc3vUAAAG: Sending packet PING data None
+2026-06-09 22:34:25 [INFO] engineio.server: _Wja3gpoczdUc3vUAAAG: Received packet PONG data 
+2026-06-09 22:34:27 [INFO] engineio.server: sasYbDfhK4DVkD5CAAAJ: Sending packet PING data None
+2026-06-09 22:34:27 [INFO] engineio.server: sasYbDfhK4DVkD5CAAAJ: Received packet PONG data 
+2026-06-09 22:34:48 [INFO] httpx: HTTP Request: POST https://openrouter.ai/api/v1/chat/completions "HTTP/1.1 200 OK"
+2026-06-09 22:34:49 [INFO] app.middleware: POST /api/v1/ai-chat 200 7052.65ms
+2026-06-09 22:34:50 [INFO] engineio.server: _Wja3gpoczdUc3vUAAAG: Sending packet PING data None
+2026-06-09 22:34:50 [INFO] engineio.server: _Wja3gpoczdUc3vUAAAG: Received packet PONG data 
+2026-06-09 22:34:52 [INFO] engineio.server: sasYbDfhK4DVkD5CAAAJ: Sending packet PING data None
+2026-06-09 22:34:52 [INFO] engineio.server: sasYbDfhK4DVkD5CAAAJ: Received packet PONG data 
+2026-06-09 22:35:00 [INFO] httpx: HTTP Request: POST https://openrouter.ai/api/v1/chat/completions "HTTP/1.1 200 OK"
+2026-06-09 22:35:01 [INFO] app.middleware: POST /api/v1/ai-chat 200 6117.18ms
+2026-06-09 22:35:12 [INFO] httpx: HTTP Request: POST https://openrouter.ai/api/v1/chat/completions "HTTP/1.1 200 OK"
+2026-06-09 22:35:13 [INFO] app.middleware: POST /api/v1/ai-chat 200 5316.20ms
+2026-06-09 22:35:15 [INFO] engineio.server: _Wja3gpoczdUc3vUAAAG: Sending packet PING data None
+2026-06-09 22:35:15 [INFO] engineio.server: _Wja3gpoczdUc3vUAAAG: Received packet PONG data 
+2026-06-09 22:35:17 [INFO] engineio.server: sasYbDfhK4DVkD5CAAAJ: Sending packet PING data None
+2026-06-09 22:35:17 [INFO] engineio.server: sasYbDfhK4DVkD5CAAAJ: Received packet PONG data 
+2026-06-09 22:35:26 [INFO] httpx: HTTP Request: POST https://openrouter.ai/api/v1/chat/completions "HTTP/1.1 200 OK"
+2026-06-09 22:35:26 [INFO] app.middleware: POST /api/v1/ai-chat 200 5409.12ms
+2026-06-09 22:35:40 [INFO] engineio.server: _Wja3gpoczdUc3vUAAAG: Sending packet PING data None
+2026-06-09 22:35:40 [INFO] engineio.server: _Wja3gpoczdUc3vUAAAG: Received packet PONG data 
+2026-06-09 22:35:42 [INFO] engineio.server: sasYbDfhK4DVkD5CAAAJ: Sending packet PING data None
+2026-06-09 22:35:42 [INFO] engineio.server: sasYbDfhK4DVkD5CAAAJ: Received packet PONG data 
+2026-06-09 22:35:47 [INFO] httpx: HTTP Request: POST https://openrouter.ai/api/v1/chat/completions "HTTP/1.1 200 OK"
+2026-06-09 22:35:49 [INFO] app.middleware: POST /api/v1/ai-chat 200 5757.61ms
+2026-06-09 22:36:05 [INFO] engineio.server: _Wja3gpoczdUc3vUAAAG: Sending packet PING data None
+2026-06-09 22:36:05 [INFO] engineio.server: _Wja3gpoczdUc3vUAAAG: Received packet PONG data 
+2026-06-09 22:36:07 [INFO] engineio.server: sasYbDfhK4DVkD5CAAAJ: Sending packet PING data None
+2026-06-09 22:36:07 [INFO] engineio.server: sasYbDfhK4DVkD5CAAAJ: Received packet PONG data 
+2026-06-09 22:36:17 [INFO] httpx: HTTP Request: POST https://openrouter.ai/api/v1/chat/completions "HTTP/1.1 200 OK"
+2026-06-09 22:36:19 [INFO] app.middleware: POST /api/v1/ai-chat 200 5580.00ms
+2026-06-09 22:36:30 [INFO] engineio.server: _Wja3gpoczdUc3vUAAAG: Sending packet PING data None
+2026-06-09 22:36:30 [INFO] engineio.server: _Wja3gpoczdUc3vUAAAG: Received packet PONG data 
+2026-06-09 22:36:32 [INFO] engineio.server: sasYbDfhK4DVkD5CAAAJ: Sending packet PING data None
+2026-06-09 22:36:32 [INFO] engineio.server: sasYbDfhK4DVkD5CAAAJ: Received packet PONG data 
+2026-06-09 22:36:33 [INFO] httpx: HTTP Request: POST https://openrouter.ai/api/v1/chat/completions "HTTP/1.1 200 OK"
+2026-06-09 22:36:34 [INFO] app.middleware: POST /api/v1/ai-chat 200 4695.00ms
+2026-06-09 22:36:48 [INFO] app.middleware: GET /api/v1/auth/me 200 1665.45ms
+2026-06-09 22:36:48 [INFO] engineio.server: x9roucnv3qKHAQWeAAAL: Sending packet OPEN data {'sid': 'x9roucnv3qKHAQWeAAAL', 'upgrades': [], 'pingTimeout': 20000, 'pingInterval': 25000}
+2026-06-09 22:36:48 [INFO] engineio.server: x9roucnv3qKHAQWeAAAL: Received request to upgrade to websocket
+2026-06-09 22:36:48 [INFO] engineio.server: x9roucnv3qKHAQWeAAAL: Upgrade to websocket successful
+2026-06-09 22:36:48 [INFO] engineio.server: x9roucnv3qKHAQWeAAAL: Received packet MESSAGE data 0{"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxZWViYzU5ZC0yNzkxLTQ3YzQtYmU1Zi0yYzgxNDkzZWQ0NWQiLCJleHAiOjE3ODEwMjYzMzgsInR5cGUiOiJhY2Nlc3MiLCJqdGkiOiJkNDFjMzhhYi1kN2UyLTQ5NjQtYTY3Ni1hYzc1MDY2NjY0MmIifQ.re2uE8RqYGMVvXfnx7s37rQnyZ0kFzlpWRRwkowCdfw"}
+2026-06-09 22:36:49 [INFO] socketio.server: yWGo7_nNKBCGBu7UAAAM is entering room user:1eebc59d-2791-47c4-be5f-2c81493ed45d [/]
+2026-06-09 22:36:49 [INFO] app.socket_server: [Socket.IO] Connection established: yWGo7_nNKBCGBu7UAAAM -> 1eebc59d-2791-47c4-be5f-2c81493ed45d
+2026-06-09 22:36:49 [INFO] engineio.server: x9roucnv3qKHAQWeAAAL: Sending packet MESSAGE data 0{"sid":"yWGo7_nNKBCGBu7UAAAM"}
+2026-06-09 22:36:50 [INFO] app.middleware: GET /api/v1/auth/me 200 1831.57ms
+2026-06-09 22:36:50 [INFO] engineio.server: x9roucnv3qKHAQWeAAAL: Received packet MESSAGE data 1
+2026-06-09 22:36:50 [INFO] engineio.server: VMYOIqRetOfXXRrDAAAN: Sending packet OPEN data {'sid': 'VMYOIqRetOfXXRrDAAAN', 'upgrades': [], 'pingTimeout': 20000, 'pingInterval': 25000}
+2026-06-09 22:36:50 [INFO] engineio.server: VMYOIqRetOfXXRrDAAAN: Received request to upgrade to websocket
+2026-06-09 22:36:50 [INFO] engineio.server: VMYOIqRetOfXXRrDAAAN: Upgrade to websocket successful
+2026-06-09 22:36:50 [INFO] engineio.server: VMYOIqRetOfXXRrDAAAN: Received packet MESSAGE data 0{"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxZWViYzU5ZC0yNzkxLTQ3YzQtYmU1Zi0yYzgxNDkzZWQ0NWQiLCJleHAiOjE3ODEwMjYzMzgsInR5cGUiOiJhY2Nlc3MiLCJqdGkiOiJkNDFjMzhhYi1kN2UyLTQ5NjQtYTY3Ni1hYzc1MDY2NjY0MmIifQ.re2uE8RqYGMVvXfnx7s37rQnyZ0kFzlpWRRwkowCdfw"}
+2026-06-09 22:36:51 [INFO] socketio.server: 5PSBq5Ybk67asXejAAAO is entering room user:1eebc59d-2791-47c4-be5f-2c81493ed45d [/]
+2026-06-09 22:36:51 [INFO] app.socket_server: [Socket.IO] Connection established: 5PSBq5Ybk67asXejAAAO -> 1eebc59d-2791-47c4-be5f-2c81493ed45d
+2026-06-09 22:36:51 [INFO] engineio.server: VMYOIqRetOfXXRrDAAAN: Sending packet MESSAGE data 0{"sid":"5PSBq5Ybk67asXejAAAO"}
+2026-06-09 22:36:51 [INFO] app.middleware: GET /api/v1/promotions/active 200 3017.30ms
+2026-06-09 22:36:51 [INFO] app.middleware: GET /api/v1/notifications/ 200 3363.31ms
+2026-06-09 22:36:53 [INFO] app.middleware: GET /api/v1/promotions/active 200 1750.76ms
+2026-06-09 22:36:55 [INFO] app.middleware: GET /api/v1/notifications/ 200 3184.00ms
+2026-06-09 22:36:55 [INFO] engineio.server: _Wja3gpoczdUc3vUAAAG: Sending packet PING data None
+2026-06-09 22:36:55 [INFO] engineio.server: _Wja3gpoczdUc3vUAAAG: Received packet PONG data 
+2026-06-09 22:37:15 [INFO] engineio.server: VMYOIqRetOfXXRrDAAAN: Sending packet PING data None
+2026-06-09 22:37:15 [INFO] engineio.server: VMYOIqRetOfXXRrDAAAN: Received packet PONG data 
+2026-06-09 22:37:20 [INFO] engineio.server: _Wja3gpoczdUc3vUAAAG: Sending packet PING data None
+2026-06-09 22:37:20 [INFO] engineio.server: _Wja3gpoczdUc3vUAAAG: Received packet PONG data 
