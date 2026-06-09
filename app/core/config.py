@@ -44,6 +44,9 @@ class Settings(BaseSettings):
     # Google AI (Gemini) for AI Chatbot
     GOOGLE_API_KEY: Optional[str] = None
 
+    # OpenRouter API (alternative LLM provider for AI chatbot)
+    OPENROUTER_API_KEY: Optional[str] = None
+
     # Stripe / Payments
     STRIPE_SECRET_KEY: Optional[str] = None
     STRIPE_PUBLISHABLE_KEY: Optional[str] = None
