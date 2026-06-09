@@ -20696,3 +20696,77 @@ WHERE notifications.id = %(pk_1)s::UUID]
 2026-06-09 12:16:13 [INFO] app.middleware: GET /api/v1/restaurants/eb092c87-cb11-4913-ac57-cd5576378639 200 1222.58ms
 2026-06-09 12:16:13 [INFO] app.middleware: GET /api/v1/restaurants 200 1222.58ms
 2026-06-09 12:16:13 [INFO] app.middleware: GET /api/v1/restaurants/eb092c87-cb11-4913-ac57-cd5576378639/menu 200 1499.19ms
+2026-06-09 12:16:35 [INFO] engineio.server: jptjnEaGwsCxYG2eAAAf: Sending packet PING data None
+2026-06-09 12:16:35 [INFO] engineio.server: jptjnEaGwsCxYG2eAAAf: Received packet PONG data 
+2026-06-09 12:17:00 [INFO] engineio.server: jptjnEaGwsCxYG2eAAAf: Sending packet PING data None
+2026-06-09 12:17:00 [INFO] engineio.server: jptjnEaGwsCxYG2eAAAf: Received packet PONG data 
+2026-06-09 12:17:25 [INFO] engineio.server: jptjnEaGwsCxYG2eAAAf: Sending packet PING data None
+2026-06-09 12:17:25 [INFO] engineio.server: jptjnEaGwsCxYG2eAAAf: Received packet PONG data 
+2026-06-09 12:17:50 [INFO] engineio.server: jptjnEaGwsCxYG2eAAAf: Sending packet PING data None
+2026-06-09 12:17:50 [INFO] engineio.server: jptjnEaGwsCxYG2eAAAf: Received packet PONG data 
+2026-06-09 12:18:15 [INFO] engineio.server: jptjnEaGwsCxYG2eAAAf: Sending packet PING data None
+2026-06-09 12:18:15 [INFO] engineio.server: jptjnEaGwsCxYG2eAAAf: Received packet PONG data 
+2026-06-09 12:18:40 [INFO] engineio.server: jptjnEaGwsCxYG2eAAAf: Sending packet PING data None
+2026-06-09 12:18:40 [INFO] engineio.server: jptjnEaGwsCxYG2eAAAf: Received packet PONG data 
+2026-06-09 12:19:05 [INFO] engineio.server: jptjnEaGwsCxYG2eAAAf: Sending packet PING data None
+2026-06-09 12:19:05 [INFO] engineio.server: jptjnEaGwsCxYG2eAAAf: Received packet PONG data 
+2026-06-09 12:19:30 [INFO] engineio.server: jptjnEaGwsCxYG2eAAAf: Sending packet PING data None
+2026-06-09 12:19:30 [INFO] engineio.server: jptjnEaGwsCxYG2eAAAf: Received packet PONG data 
+2026-06-09 12:19:55 [INFO] engineio.server: jptjnEaGwsCxYG2eAAAf: Sending packet PING data None
+2026-06-09 12:19:55 [INFO] engineio.server: jptjnEaGwsCxYG2eAAAf: Received packet PONG data 
+2026-06-09 12:20:20 [INFO] engineio.server: jptjnEaGwsCxYG2eAAAf: Sending packet PING data None
+2026-06-09 12:20:20 [INFO] engineio.server: jptjnEaGwsCxYG2eAAAf: Received packet PONG data 
+2026-06-09 12:20:45 [INFO] engineio.server: jptjnEaGwsCxYG2eAAAf: Sending packet PING data None
+2026-06-09 12:20:45 [INFO] engineio.server: jptjnEaGwsCxYG2eAAAf: Received packet PONG data 
+2026-06-09 12:21:10 [INFO] engineio.server: jptjnEaGwsCxYG2eAAAf: Sending packet PING data None
+2026-06-09 12:21:10 [INFO] engineio.server: jptjnEaGwsCxYG2eAAAf: Received packet PONG data 
+2026-06-09 12:21:35 [INFO] engineio.server: jptjnEaGwsCxYG2eAAAf: Sending packet PING data None
+2026-06-09 12:21:35 [INFO] engineio.server: jptjnEaGwsCxYG2eAAAf: Received packet PONG data 
+2026-06-09 12:22:00 [INFO] engineio.server: jptjnEaGwsCxYG2eAAAf: Sending packet PING data None
+2026-06-09 12:22:00 [INFO] engineio.server: jptjnEaGwsCxYG2eAAAf: Received packet PONG data 
+2026-06-09 12:22:25 [INFO] engineio.server: jptjnEaGwsCxYG2eAAAf: Sending packet PING data None
+2026-06-09 12:22:25 [INFO] engineio.server: jptjnEaGwsCxYG2eAAAf: Received packet PONG data 
+2026-06-09 12:22:50 [INFO] engineio.server: jptjnEaGwsCxYG2eAAAf: Sending packet PING data None
+2026-06-09 12:22:50 [INFO] engineio.server: jptjnEaGwsCxYG2eAAAf: Received packet PONG data 
+2026-06-09 12:23:15 [INFO] engineio.server: jptjnEaGwsCxYG2eAAAf: Sending packet PING data None
+2026-06-09 12:23:15 [INFO] engineio.server: jptjnEaGwsCxYG2eAAAf: Received packet PONG data 
+2026-06-09 12:23:40 [INFO] engineio.server: jptjnEaGwsCxYG2eAAAf: Sending packet PING data None
+2026-06-09 12:23:40 [INFO] engineio.server: jptjnEaGwsCxYG2eAAAf: Received packet PONG data 
+2026-06-09 12:24:05 [INFO] engineio.server: jptjnEaGwsCxYG2eAAAf: Sending packet PING data None
+2026-06-09 12:24:05 [INFO] engineio.server: jptjnEaGwsCxYG2eAAAf: Received packet PONG data 
+2026-06-09 12:24:30 [INFO] engineio.server: jptjnEaGwsCxYG2eAAAf: Sending packet PING data None
+2026-06-09 12:24:30 [INFO] engineio.server: jptjnEaGwsCxYG2eAAAf: Received packet PONG data 
+2026-06-09 12:24:55 [INFO] engineio.server: jptjnEaGwsCxYG2eAAAf: Sending packet PING data None
+2026-06-09 12:24:55 [INFO] engineio.server: jptjnEaGwsCxYG2eAAAf: Received packet PONG data 
+2026-06-09 12:25:20 [INFO] engineio.server: jptjnEaGwsCxYG2eAAAf: Sending packet PING data None
+2026-06-09 12:25:20 [INFO] engineio.server: jptjnEaGwsCxYG2eAAAf: Received packet PONG data 
+2026-06-09 12:25:45 [INFO] engineio.server: jptjnEaGwsCxYG2eAAAf: Sending packet PING data None
+2026-06-09 12:25:45 [INFO] engineio.server: jptjnEaGwsCxYG2eAAAf: Received packet PONG data 
+2026-06-09 12:26:10 [INFO] engineio.server: jptjnEaGwsCxYG2eAAAf: Sending packet PING data None
+2026-06-09 12:38:51 [INFO] app: Logging configured
+2026-06-09 12:41:36 [INFO] app: Logging configured
+2026-06-09 12:45:22 [INFO] app.middleware: GET /healthz 200 0.00ms
+2026-06-09 12:48:19 [INFO] app.middleware: GET /healthz 200 3.02ms
+2026-06-09 12:48:26 [INFO] app.middleware: POST /api/v1/auth/login 401 6297.60ms
+2026-06-09 12:48:26 [WARNING] app.monitoring: request_error /api/v1/auth/login -> 401 | Client or server error
+2026-06-09 12:48:30 [INFO] app: Logging configured
+2026-06-09 12:48:48 [INFO] app.middleware: GET /healthz 200 4.04ms
+2026-06-09 12:48:54 [INFO] app.middleware: POST /api/v1/auth/login 401 6137.47ms
+2026-06-09 12:48:54 [WARNING] app.monitoring: request_error /api/v1/auth/login -> 401 | Client or server error
+2026-06-09 12:48:55 [INFO] app.middleware: POST /api/v1/auth/login 401 1327.22ms
+2026-06-09 12:48:55 [WARNING] app.monitoring: request_error /api/v1/auth/login -> 401 | Client or server error
+2026-06-09 12:48:58 [INFO] app.middleware: POST /api/v1/auth/login 200 3261.35ms
+2026-06-09 12:48:59 [ERROR] app.services.ai_chatbot: AI chatbot error: cannot import name 'genai' from 'google' (unknown location)
+Traceback (most recent call last):
+  File "D:\Bheemverse\Quickbites\backend\app\services\ai_chatbot.py", line 78, in answer_question
+    from google import genai
+ImportError: cannot import name 'genai' from 'google' (unknown location)
+2026-06-09 12:49:00 [INFO] app.middleware: POST /api/v1/ai-chat 200 1425.80ms
+2026-06-09 12:49:34 [INFO] app.notifications: Email not configured, skipping send to testchat@test.com: Welcome to QuickBites!
+2026-06-09 12:49:34 [INFO] app.middleware: POST /api/v1/auth/register 201 5762.67ms
+2026-06-09 12:49:43 [ERROR] app.services.ai_chatbot: AI chatbot error: cannot import name 'genai' from 'google' (unknown location)
+Traceback (most recent call last):
+  File "D:\Bheemverse\Quickbites\backend\app\services\ai_chatbot.py", line 78, in answer_question
+    from google import genai
+ImportError: cannot import name 'genai' from 'google' (unknown location)
+2026-06-09 12:49:44 [INFO] app.middleware: POST /api/v1/ai-chat 200 1514.49ms

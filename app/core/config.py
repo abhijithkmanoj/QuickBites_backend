@@ -41,6 +41,9 @@ class Settings(BaseSettings):
     FIREBASE_CREDENTIALS_PATH: Optional[str] = None
     FIREBASE_SENDER_ID: Optional[str] = None
 
+    # Google AI (Gemini) for AI Chatbot
+    GOOGLE_API_KEY: Optional[str] = None
+
     # Stripe / Payments
     STRIPE_SECRET_KEY: Optional[str] = None
     STRIPE_PUBLISHABLE_KEY: Optional[str] = None

@@ -23,6 +23,7 @@ from app.api.api_v1.endpoints.loyalty import router as loyalty_router
 from app.api.api_v1.endpoints.tracking import router as tracking_router
 from app.api.api_v1.endpoints.promotions import router as promotions_router
 from app.api.api_v1.endpoints.chat import router as chat_router
+from app.api.api_v1.endpoints.ai_chat import router as ai_chat_router
 
 router = APIRouter()
 router.include_router(addresses_router, prefix="/addresses", tags=["addresses"])
@@ -48,4 +49,5 @@ router.include_router(payouts_router, prefix="/payouts", tags=["payouts"])
 router.include_router(loyalty_router, prefix="/loyalty", tags=["loyalty"])
 router.include_router(tracking_router, prefix="/delivery", tags=["delivery"])
 router.include_router(promotions_router, prefix="/promotions", tags=["promotions"])
-router.include_router(chat_router, prefix="", tags=["chat"]) 
+router.include_router(chat_router, prefix="", tags=["chat"])
+router.include_router(ai_chat_router, prefix="", tags=["ai-chat"]) 
