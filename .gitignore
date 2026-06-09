@@ -2,3 +2,13 @@ __pycache__/
 *.pyc
 .venv/
 .env
+
+# Windows reserved device names (git cannot index these)
+nul
+CON
+PRN
+AUX
+LPT1
+LPT2
+COM1
+COM2
