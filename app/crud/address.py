@@ -3,6 +3,10 @@ from typing import List
 from sqlalchemy.orm import Session
 from app.db.models.address import Address
 from app.schemas.address import AddressCreate, AddressUpdate
+from app.services import geocoding
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def _parse_uuid(value: str | uuid.UUID) -> uuid.UUID | str:
@@ -60,11 +64,29 @@ def create_address(db: Session, user_id: str | uuid.UUID, address_in: AddressCre
         postal_code=address_in.postal_code,
         phone=address_in.phone,
         landmark=address_in.landmark,
+        address_line2=getattr(address_in, "address_line2", None),
+        unit=getattr(address_in, "unit", None),
         is_default=address_in.is_default,
     )
     db.add(address)
     db.commit()
     db.refresh(address)
+
+    # Best-effort geocode: do not let failures block address creation
+    try:
+        full_address = f"{address.street}, {address.city}, {address.state}, {address.postal_code}"
+        geo = geocoding.geocode_address(full_address)
+        if geo and geo.get("lat") and geo.get("lng"):
+            address.latitude = geo.get("lat")
+            address.longitude = geo.get("lng")
+            address.formatted_address = geo.get("formatted_address")
+            address.place_id = geo.get("place_id")
+            db.add(address)
+            db.commit()
+            db.refresh(address)
+    except Exception as exc:
+        logger.exception("Geocoding failed for address %s: %s", getattr(address, "id", "?"), exc)
+
     return address
 
 
@@ -79,6 +101,23 @@ def update_address(db: Session, address: Address, address_in: AddressUpdate) -> 
     db.add(address)
     db.commit()
     db.refresh(address)
+
+    # Best-effort geocode when address fields changed
+    try:
+        if any(k in update_data for k in ("street", "city", "state", "postal_code")):
+            full_address = f"{address.street}, {address.city}, {address.state}, {address.postal_code}"
+            geo = geocoding.geocode_address(full_address)
+            if geo and geo.get("lat") and geo.get("lng"):
+                address.latitude = geo.get("lat")
+                address.longitude = geo.get("lng")
+                address.formatted_address = geo.get("formatted_address")
+                address.place_id = geo.get("place_id")
+                db.add(address)
+                db.commit()
+                db.refresh(address)
+    except Exception as exc:
+        logger.exception("Geocoding failed on update for address %s: %s", getattr(address, "id", "?"), exc)
+
     return address
 
 

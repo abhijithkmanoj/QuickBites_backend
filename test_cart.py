@@ -34,8 +34,9 @@ print(f"Created token: {access_token}")
 from app.db.models.restaurant import Restaurant
 from app.db.models.menu_item import MenuItem
 
+unique_name = f"Test Restaurant {uuid.uuid4()}"
 test_restaurant = Restaurant(
-    name="Test Restaurant",
+    name=unique_name,
     address="123 Test St",
     is_active=True
 )

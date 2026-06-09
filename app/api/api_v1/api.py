@@ -15,6 +15,14 @@ from app.api.api_v1.endpoints.recommendations import router as recommendations_r
 from app.api.api_v1.endpoints.monitoring import router as monitoring_router
 from app.api.api_v1.endpoints.users import router as users_router
 from app.api.api_v1.endpoints.restaurant_owner import router as owner_router
+from app.api.api_v1.endpoints.places import router as places_router
+from app.api.api_v1.endpoints.notifications import router as notifications_router
+from app.api.api_v1.endpoints.payments import router as payments_router
+from app.api.api_v1.endpoints.payouts import router as payouts_router
+from app.api.api_v1.endpoints.loyalty import router as loyalty_router
+from app.api.api_v1.endpoints.tracking import router as tracking_router
+from app.api.api_v1.endpoints.promotions import router as promotions_router
+from app.api.api_v1.endpoints.chat import router as chat_router
 
 router = APIRouter()
 router.include_router(addresses_router, prefix="/addresses", tags=["addresses"])
@@ -33,3 +41,11 @@ router.include_router(monitoring_router, prefix="/monitoring", tags=["monitoring
 router.include_router(users_router, prefix="/users", tags=["users"])
 router.include_router(recommendations_router, prefix="/recommendations", tags=["recommendations"])
 router.include_router(owner_router, prefix="/owner", tags=["owner"])
+router.include_router(places_router, prefix="/places", tags=["places"])
+router.include_router(notifications_router, prefix="/notifications", tags=["notifications"])
+router.include_router(payments_router, prefix="/payments", tags=["payments"])
+router.include_router(payouts_router, prefix="/payouts", tags=["payouts"])
+router.include_router(loyalty_router, prefix="/loyalty", tags=["loyalty"])
+router.include_router(tracking_router, prefix="/delivery", tags=["delivery"])
+router.include_router(promotions_router, prefix="/promotions", tags=["promotions"])
+router.include_router(chat_router, prefix="", tags=["chat"]) 

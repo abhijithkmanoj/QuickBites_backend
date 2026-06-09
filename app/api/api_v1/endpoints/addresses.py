@@ -14,6 +14,10 @@ from app.crud.address import (
 )
 from app.schemas.address import AddressCreate, AddressRead, AddressUpdate
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 router = APIRouter()
 
 
@@ -22,7 +26,17 @@ def list_addresses(
     current_user: User = Depends(get_current_active_user),
     db: Session = Depends(get_db),
 ):
-    return get_user_addresses(db, current_user.id)
+    try:
+        logger.debug(f"Fetching addresses for user {current_user.id}")
+        addresses = get_user_addresses(db, current_user.id)
+        logger.debug(f"Found {len(addresses)} addresses for user {current_user.id}")
+        return addresses
+    except Exception as exc:
+        logger.exception(f"Error fetching addresses for user {current_user.id}: {exc}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Error fetching addresses"
+        )
 
 
 @router.post("", response_model=AddressRead, status_code=status.HTTP_201_CREATED, summary="Create a new address")
@@ -31,7 +45,17 @@ def create_new_address(
     current_user: User = Depends(get_current_active_user),
     db: Session = Depends(get_db),
 ):
-    return create_address(db, current_user.id, address_in)
+    try:
+        logger.debug(f"Creating address for user {current_user.id}: {address_in}")
+        result = create_address(db, current_user.id, address_in)
+        logger.debug(f"Address created successfully: {result.id}")
+        return result
+    except Exception as exc:
+        logger.exception(f"Error creating address for user {current_user.id}: {exc}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Error creating address"
+        )
 
 
 @router.put("/{address_id}", response_model=AddressRead, summary="Update an address")

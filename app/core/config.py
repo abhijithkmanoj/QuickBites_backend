@@ -41,6 +41,12 @@ class Settings(BaseSettings):
     FIREBASE_CREDENTIALS_PATH: Optional[str] = None
     FIREBASE_SENDER_ID: Optional[str] = None
 
+    # Stripe / Payments
+    STRIPE_SECRET_KEY: Optional[str] = None
+    STRIPE_PUBLISHABLE_KEY: Optional[str] = None
+    STRIPE_WEBHOOK_SECRET: Optional[str] = None
+    PAYMENTS_ENABLED: bool = False
+
     RATE_LIMIT_REQUESTS: int = 100
     RATE_LIMIT_WINDOW_SECONDS: int = 60
 
@@ -131,11 +137,16 @@ class Settings(BaseSettings):
 
     @property
     def cors_origins_list(self) -> List[str]:
-        return [
-            origin.strip()
-            for origin in self.CORS_ORIGINS.split(",")
-            if origin.strip()
-        ]
+        origins = []
+        for origin in self.CORS_ORIGINS.split(","):
+            o = origin.strip()
+            if not o:
+                continue
+            # Normalize by removing a trailing slash, e.g. http://localhost:5173/
+            if o != "*":
+                o = o.rstrip("/")
+            origins.append(o)
+        return origins
 
     @property
     def database_url_info(self) -> str:

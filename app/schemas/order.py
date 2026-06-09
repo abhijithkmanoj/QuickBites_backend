@@ -61,6 +61,7 @@ class OrderCreate(BaseModel):
     address_id: Optional[UUID] = None
     delivery_address_text: Optional[str] = None
     payment_method: str = "cod"
+    promo_codes: Optional[List[str]] = None
 
 
 class OrderStatusUpdate(BaseModel):
@@ -73,3 +74,14 @@ class OrderReject(BaseModel):
 
 class OrderCancelRequest(BaseModel):
     pass
+
+
+class OrderCreatePaymentInfo(BaseModel):
+    client_secret: str
+    payment_intent_id: str
+    payment_id: str
+
+
+class OrderCreateResponse(BaseModel):
+    order: OrderRead
+    payment: Optional[OrderCreatePaymentInfo] = None

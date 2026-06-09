@@ -13,6 +13,7 @@ from .user import User
 from .user_activity import UserActivity
 from .user_favorite import UserFavorite
 from .cart import Cart, CartItem
+from .notification import Notification
 
 __all__ = [
     "User",
@@ -32,4 +33,5 @@ __all__ = [
     "UserFavorite",
     "Cart",
     "CartItem",
+    "Notification",
 ]

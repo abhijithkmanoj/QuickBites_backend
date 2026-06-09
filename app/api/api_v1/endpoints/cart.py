@@ -15,6 +15,15 @@ def read_cart(current_user: User = Depends(get_current_active_user), db: Session
     cart = get_cart_by_user(db, current_user.id)
     if not cart:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Cart not found.")
+    # compute applicable promotions for cart total
+    try:
+        total_cents = int(sum([int(i.price * 100) * i.quantity for i in cart.items]))
+    except Exception:
+        total_cents = 0
+    from app.services import promotions as promotions_service
+    promos = promotions_service.evaluate_promotions(db, current_user.id, total_cents, None)
+    # attach a lightweight summary on the returned cart object
+    cart.applicable_promotions = [{'code': a['code'], 'promo_id': a['promo_id'], 'discount_cents': a['discount_cents']} for a in promos.get('applied', [])]
     return cart
 
 

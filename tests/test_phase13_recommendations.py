@@ -1,11 +1,15 @@
+import uuid
 from fastapi import status
 from app.core.config import settings
 
 
 def _register_and_login(client, email="owner@example.com", role="restaurant_owner"):
+    # create unique email per call
+    local, domain = email.split("@") if "@" in email else (email, "example.com")
+    unique_email = f"{local}-{uuid.uuid4().hex[:8]}@{domain}"
     payload = {
         "name": "Restaurant Owner",
-        "email": email,
+        "email": unique_email,
         "password": "Password123",
         "phone": "9876543210",
         "role": role,

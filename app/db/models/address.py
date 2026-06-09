@@ -1,7 +1,7 @@
 
 import uuid
 from datetime import datetime
-from sqlalchemy import Boolean, Column, DateTime, ForeignKey, String, Text
+from sqlalchemy import Boolean, Column, DateTime, ForeignKey, String, Text, Float
 from sqlalchemy.orm import relationship
 from app.db.base import Base
 from app.db.types import GUID
@@ -18,6 +18,12 @@ class Address(Base):
     postal_code = Column(String(20), nullable=False)
     phone = Column(String(20), nullable=True)
     landmark = Column(String(255), nullable=True)
+    address_line2 = Column(String(255), nullable=True)
+    unit = Column(String(64), nullable=True)
+    latitude = Column(Float, nullable=True)
+    longitude = Column(Float, nullable=True)
+    formatted_address = Column(String(500), nullable=True)
+    place_id = Column(String(255), nullable=True)
     is_default = Column(Boolean, default=False)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)

@@ -6,6 +6,7 @@ from uuid import UUID
 from sqlalchemy.orm import Session
 from app.db.models.order import Order
 from app.services.distance import haversine_km
+from app.db.models.driver_location import DriverLocation
 
 
 RADIUS_EARTH_KM = 6371.0
@@ -28,6 +29,13 @@ def update_tracking(db: Session, order_id: UUID, payload: dict) -> Order:
         order.partner_lat = payload["partner_lat"]
         order.partner_lng = payload["partner_lng"]
         order.last_location_updated_at = datetime.utcnow()
+        # persist driver location ping
+        try:
+            dl = DriverLocation(driver_id=order.delivery_partner_id, latitude=order.partner_lat, longitude=order.partner_lng)
+            db.add(dl)
+        except Exception:
+            # non-fatal: continue
+            pass
 
     if "delivery_lat" in payload and "delivery_lng" in payload:
         order.delivery_lat = payload["delivery_lat"]

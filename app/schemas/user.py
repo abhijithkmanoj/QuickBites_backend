@@ -72,6 +72,14 @@ class DeactivateAccountRequest(BaseModel):
     password: str  # require password confirmation to deactivate
 
 
+class UserCreateResponse(BaseModel):
+    """Returned on successful registration — includes user data + auth tokens for auto-login."""
+    user: UserRead
+    access_token: str
+    refresh_token: str
+    token_type: str = "bearer"
+
+
 class Token(BaseModel):
     access_token: str
     refresh_token: str

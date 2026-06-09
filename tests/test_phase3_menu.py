@@ -1,3 +1,4 @@
+import uuid
 from app.core.security import get_password_hash
 from app.core.roles import Role
 from app.db.models.restaurant import Restaurant
@@ -9,9 +10,10 @@ from fastapi import status
 def create_owner_and_restaurant():
     db = SessionLocal()
     password = "OwnerPassword123"
+    unique_email = f"owner-{uuid.uuid4().hex[:8]}@example.com"
     owner = User(
         name="Owner User",
-        email="owner@example.com",
+        email=unique_email,
         phone="5555555555",
         password_hash=get_password_hash(password),
         role=Role.restaurant_owner.value,
@@ -21,9 +23,10 @@ def create_owner_and_restaurant():
     db.commit()
     db.refresh(owner)
 
+    unique_rest = f"Owner Diner {uuid.uuid4().hex[:8]}"
     restaurant = Restaurant(
         owner_id=owner.id,
-        name="Owner Diner",
+        name=unique_rest,
         description="Test restaurant for menu",
         cuisine="Italian",
         address="456 Menu St",

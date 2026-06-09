@@ -33,6 +33,7 @@ class CartRead(BaseModel):
     user_id: UUID
     restaurant_id: UUID
     items: List[CartItemRead] = []
+    applicable_promotions: List[dict] = []
     created_at: datetime
 
     class Config:

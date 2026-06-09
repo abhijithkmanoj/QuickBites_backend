@@ -1,3 +1,148 @@
+"""Async notification orchestrator.
+
+Provides lightweight async wrappers and event->template mapping for
+order-related notifications. Uses the existing synchronous
+`FirebaseNotificationService` under the hood but runs blocking calls
+in a thread so endpoints can await without blocking the event loop.
+"""
+from __future__ import annotations
+
+import asyncio
+import logging
+from typing import Iterable
+
+logger = logging.getLogger("app.services.notifications")
+
+
+async def send_push(user_id: int | str, title: str, body: str, data: dict | None = None) -> None:
+    """Fetch user's device tokens and send a push notification.
+
+    This is async but delegates the blocking firebase call to a thread.
+    Failures are logged and swallowed — notifications must never raise.
+    """
+    try:
+        from app.db.session import SessionLocal
+        from app.crud.device_token import get_user_device_tokens
+        from app.services.firebase_notifications import FirebaseNotificationService
+
+        db = SessionLocal()
+        try:
+            rows = get_user_device_tokens(db, user_id)
+            tokens = [r.token for r in rows if getattr(r, "token", None)]
+        finally:
+            db.close()
+
+        if not tokens:
+            logger.debug("No device tokens for user %s", user_id)
+            return
+
+        # Run the blocking send in a threadpool
+        await asyncio.to_thread(
+            FirebaseNotificationService.send_notification,
+            tokens,
+            title,
+            body,
+            data,
+        )
+    except Exception:
+        logger.exception("Error while sending push to user %s", user_id)
+
+
+async def send_order_notification(order_id: str | int, event: str) -> None:
+    """Map an order event to templates and notify relevant users.
+
+    Supported events: order_placed, order_accepted, order_ready,
+    out_for_delivery, order_delivered, order_cancelled
+    """
+    try:
+        from app.db.session import SessionLocal
+        from app.crud.order import get_order
+        from app.services.firebase_notifications import FirebaseNotificationService
+        from app.services import realtime as realtime_service
+
+        templates = {
+            "order_placed": ("Order Confirmed 🎉", "Your order #{id} has been placed."),
+            "order_accepted": ("Restaurant is preparing your order", "Order #{id} is being prepared."),
+            "order_ready": ("Order Ready for Pickup", "Order #{id} is ready for pickup."),
+            "out_for_delivery": ("Out for Delivery 🛵", "Your order #{id} is out for delivery."),
+            "order_delivered": ("Delivered! 🎉", "Your order #{id} has been delivered."),
+            "order_cancelled": ("Order Cancelled", "Your order #{id} was cancelled."),
+        }
+
+        db = SessionLocal()
+        try:
+            order = get_order(db, order_id)
+        finally:
+            db.close()
+
+        if not order:
+            logger.debug("Order not found for notification: %s", order_id)
+            return
+
+        title_tpl, body_tpl = templates.get(event, ("Order Update", "Your order #{id} has an update."))
+        title = title_tpl.replace("{id}", str(order.id))
+        body = body_tpl.replace("{id}", str(order.id))
+
+        user_ids: list[str] = [str(order.customer_id)]
+        if order.restaurant and getattr(order.restaurant, "owner_id", None):
+            user_ids.append(str(order.restaurant.owner_id))
+        if getattr(order, "delivery_partner_id", None):
+            user_ids.append(str(order.delivery_partner_id))
+
+        # Send pushes concurrently (fire-and-forget style)
+        tasks = [send_push(uid, title, body, data={"order_id": str(order.id)}) for uid in user_ids]
+        if tasks:
+            await asyncio.gather(*tasks, return_exceptions=True)
+
+        # Also emit in-app socket notifications
+        try:
+            realtime_service.emit_notification_to_users(user_ids, {
+                "type": event,
+                "title": title,
+                "body": body,
+                "order_id": str(order.id),
+            })
+            # Persist a server-side notification record: prefer DB, fallback to in-memory
+            try:
+                from app.db.session import SessionLocal
+                from app.crud.notification import create_notification
+
+                db = SessionLocal()
+                try:
+                    for uid in user_ids:
+                        try:
+                            create_notification(
+                                db,
+                                uid,
+                                type=event,
+                                title=title,
+                                body=body,
+                                data={"order_id": str(order.id)},
+                                order_id=order.id,
+                            )
+                        except Exception:
+                            logger.exception("Failed to create DB notification for user %s", uid)
+                finally:
+                    db.close()
+            except Exception:
+                # DB not available or failed — fall back to in-memory store
+                try:
+                    from app.services.notification_store import add_notification
+
+                    for uid in user_ids:
+                        add_notification(uid, {
+                            "type": event,
+                            "title": title,
+                            "body": body,
+                            "order_id": str(order.id),
+                        })
+                except Exception:
+                    logger.exception("Failed to persist in-memory notification for order %s", order.id)
+        except Exception:
+            logger.exception("Failed to emit realtime notification for order %s", order.id)
+
+    except Exception:
+        logger.exception("Failed to process order notification for %s / %s", order_id, event)
 import logging
 from dataclasses import dataclass
 from typing import Optional

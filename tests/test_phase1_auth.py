@@ -1,3 +1,4 @@
+import uuid
 from fastapi import status
 from app.core.config import settings
 
@@ -5,7 +6,7 @@ from app.core.config import settings
 def test_register_login_me_refresh_logout(client):
     user_payload = {
         "name": "Test User",
-        "email": "testuser@example.com",
+        "email": f"testuser-{uuid.uuid4().hex[:8]}@example.com",
         "password": "Password123",
         "phone": "1234567890",
     }
@@ -67,7 +68,7 @@ def test_protected_route_requires_auth(client):
 def test_duplicate_registration_is_rejected(client):
     user_payload = {
         "name": "Duplicate User",
-        "email": "duplicate@example.com",
+        "email": f"duplicate-{uuid.uuid4().hex[:8]}@example.com",
         "password": "Password123",
         "phone": "0987654321",
     }

@@ -1,8 +1,7 @@
 from datetime import datetime, timedelta
 from typing import Optional
 
-from fastapi import APIRouter, Cookie, Depends, HTTPException, Response, status
-from fastapi.security import OAuth2PasswordRequestForm
+from fastapi import APIRouter, Cookie, Depends, HTTPException, Response, status, Request
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_current_active_user, get_db, require_roles
@@ -24,6 +23,7 @@ from app.schemas.user import (
     Token,
     TokenRefreshRequest,
     UserCreate,
+    UserCreateResponse,
     UserRead,
 )
 from app.services.notifications import EmailService
@@ -31,7 +31,7 @@ from app.services.notifications import EmailService
 router = APIRouter()
 
 
-@router.post("/register", response_model=UserRead, status_code=status.HTTP_201_CREATED)
+@router.post("/register", response_model=UserCreateResponse, status_code=status.HTTP_201_CREATED)
 def register(user_in: UserCreate, db: Session = Depends(get_db)):
     existing_user = get_user_by_email(db, user_in.email)
     if existing_user:
@@ -45,20 +45,54 @@ def register(user_in: UserCreate, db: Session = Depends(get_db)):
     if user_in.role not in allowed_roles:
         user_in.role = Role.customer
     user = create_user(db, user_in)
+
+    # Auto-login: generate tokens so the user is immediately authenticated
+    access_token = create_access_token(subject=str(user.id), expires_delta=timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES))
+    refresh_token, refresh_jti = create_refresh_token(subject=str(user.id))
+    refresh_expires_at = timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS)
+    create_refresh_token_record(db, user, refresh_jti, datetime.utcnow() + refresh_expires_at)
+
     try:
         EmailService.send_registration_email(user.email, user.name)
     except Exception:
         pass
-    return user
+    return {
+        "user": user,
+        "access_token": access_token,
+        "refresh_token": refresh_token,
+        "token_type": "bearer",
+    }
 
 
 @router.post("/login", response_model=Token)
-def login(
+async def login(
     response: Response,
-    form_data: OAuth2PasswordRequestForm = Depends(),
+    request: Request,
     db: Session = Depends(get_db),
 ):
-    user = authenticate_user(db, form_data.username, form_data.password)
+    # Accept either application/json or form-encoded OAuth2PasswordRequestForm
+    username = None
+    password = None
+    content_type = request.headers.get("content-type", "")
+    if "application/json" in content_type:
+        try:
+            body = await request.json()
+        except Exception:
+            body = {}
+        if isinstance(body, dict):
+            username = body.get("email") or body.get("username")
+            password = body.get("password")
+    else:
+        form = await request.form()
+        # Convert FormData to a plain dict to avoid serialization issues
+        try:
+            form_dict = dict(form)
+        except Exception:
+            form_dict = {k: v for k, v in form.items()}
+        username = form_dict.get("username") or form_dict.get("email")
+        password = form_dict.get("password")
+
+    user = authenticate_user(db, username, password)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,

@@ -1,7 +1,7 @@
 
 import uuid
 from datetime import datetime
-from sqlalchemy import Column, DateTime, Float, ForeignKey, Integer, String, Text
+from sqlalchemy import Column, DateTime, Float, ForeignKey, Integer, String, Text, BigInteger
 from sqlalchemy.orm import relationship
 from app.db.base import Base
 from app.db.types import GUID
@@ -23,6 +23,10 @@ class Order(Base):
     delivery_fee = Column(Float, nullable=False, default=0.0)
     gst = Column(Float, nullable=False, default=0.0)
     total_amount = Column(Float, nullable=False, default=0.0)
+    discount_amount = Column(Float, nullable=True, default=0.0)
+    applied_promotion_id = Column(GUID, ForeignKey("promotions.id", ondelete="SET NULL"), nullable=True)
+    tip_amount = Column(Float, nullable=False, default=0.0)
+    tip_amount_cents = Column(BigInteger, nullable=True)
     status = Column(String(50), nullable=False, default="pending")
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)

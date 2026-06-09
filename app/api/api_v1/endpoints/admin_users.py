@@ -10,7 +10,7 @@ from app.core.roles import Role
 from app.crud.user import get_user, list_users
 from app.crud.review import get_review as get_review_by_id, delete_review as delete_review_crud
 from app.crud.coupon import create_coupon, get_coupon, get_coupons, update_coupon, delete_coupon as delete_coupon_crud
-from app.crud.restaurant import get_restaurant, get_restaurants, get_restaurants_by_owner
+from app.crud.restaurant import get_restaurant, get_restaurants, get_restaurants_by_owner, create_restaurant
 from app.crud.restaurant_owner_profile import get_owner_profile, update_verification_status
 from app.crud.delivery_partner import get_delivery_partner_by_user
 from app.crud.order import update_order_status
@@ -24,6 +24,7 @@ from app.db.models.restaurant import Restaurant
 from app.db.models.review import Review
 from app.db.models.order import Order
 from app.schemas.coupon import CouponCreate, CouponUpdate, CouponRead
+from app.schemas.restaurant import RestaurantCreate
 from app.core.monitoring import get_recent_errors, get_endpoint_counts
 from app.schemas.user import UserRead, UserUpdate
 from app.schemas.review import ReviewCreate, ReviewRead
@@ -261,6 +262,17 @@ def approve_restaurant_owner(
     if not owner_profile:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Owner profile not found.")
     updated_profile = update_verification_status(db, owner_profile, VerificationStatus.approved)
+    # If this owner doesn't have any restaurants yet, create a minimal placeholder
+    # so the owner immediately sees a restaurant in their dashboard after approval.
+    try:
+        existing = db.query(Restaurant).filter(Restaurant.owner_id == updated_profile.user_id).first()
+        if not existing and updated_profile.business_name:
+            # Use business_name as both name and a placeholder address when no address provided.
+            restaurant_in = RestaurantCreate(name=updated_profile.business_name, address=updated_profile.business_name, owner_id=updated_profile.user_id)
+            create_restaurant(db, restaurant_in)
+    except Exception:
+        # Best-effort: don't fail approval if auto-create fails
+        pass
     return {
         "id": str(updated_profile.id),
         "user_id": str(updated_profile.user_id),

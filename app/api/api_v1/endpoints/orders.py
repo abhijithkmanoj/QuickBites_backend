@@ -1,3 +1,4 @@
+import logging
 from typing import List
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
@@ -5,6 +6,7 @@ from sqlalchemy.orm import Session
 
 from app.api.deps import get_db, get_current_active_user
 from app.crud.cart import get_cart_by_user
+from app.crud.notification import create_notification as db_create_notification
 from app.crud.order import (
     accept_order,
     cancel_order,
@@ -21,17 +23,22 @@ from app.schemas.order import OrderCreate, OrderRead, OrderReject, OrderStatusUp
 from app.services import realtime as realtime_service
 from app.services.firebase_notifications import FirebaseNotificationService
 from app.services.notifications import EmailService
+from app.services import stripe_service
+from app.core.config import settings
+from app.db.models.payment import Payment
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
 
-@router.post("", response_model=OrderRead, status_code=status.HTTP_201_CREATED, summary="Place a new order")
+@router.post("", status_code=status.HTTP_201_CREATED, summary="Place a new order")
 def place_order(
     order_in: OrderCreate,
     current_user: User = Depends(get_current_active_user),
     db: Session = Depends(get_db),
 ):
-    """Create an order from the current user's cart with COD payment."""
+    """Create an order from the current user's cart. Supports optional card payments when `PAYMENTS_ENABLED`."""
     cart = get_cart_by_user(db, current_user.id)
     if not cart or not cart.items:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Cart is empty.")
@@ -50,17 +57,84 @@ def place_order(
         order_in.delivery_address_text = ", ".join(parts)
 
     order = create_order_from_cart(db, current_user.id, cart, order_in)
+    # award loyalty points for the order (best-effort)
     try:
-        FirebaseNotificationService.send_order_notification(
-            order_id=str(order.id),
-            user_ids=[str(order.restaurant.owner_id)] if order.restaurant and order.restaurant.owner_id else [],
-            title="New Order Received",
-            body=f"Order #{order.id} has been placed.",
-        )
-        EmailService.send_order_confirmation(current_user.email, str(order.id), order.total_amount)
+        from app.services.loyalty import award_points_for_order
+
+        try:
+            award_points_for_order(db, order)
+        except Exception:
+            pass
     except Exception:
         pass
-    return order
+    payment_info = None
+
+    # If user requested a non-COD payment and payments are enabled, create a PaymentIntent
+    if getattr(order_in, "payment_method", "cod") != "cod" and settings.PAYMENTS_ENABLED:
+        try:
+            amount_cents = int(round(order.total_amount * 100))
+            intent = stripe_service.create_payment_intent(amount_cents, "inr", metadata={"order_id": str(order.id), "user_id": str(current_user.id)})
+            # persist payment record
+            payment = Payment(
+                order_id=order.id,
+                user_id=current_user.id,
+                amount=order.total_amount,
+                method="card",
+                status="pending",
+            )
+            db.add(payment)
+            db.commit()
+            db.refresh(payment)
+            payment_info = {"client_secret": intent.client_secret, "payment_intent_id": intent.id, "payment_id": str(payment.id)}
+        except Exception:
+            # Fail silently for now — order is created; client can retry payment
+            payment_info = None
+    try:
+        owner_ids = [str(order.restaurant.owner_id)] if order.restaurant and order.restaurant.owner_id else []
+        customer_id = str(current_user.id)
+        all_user_ids = [customer_id] + owner_ids
+
+        # Persist DB-backed notifications for all relevant users
+        try:
+            for uid in all_user_ids:
+                ntitle = "Order Placed 🎉" if uid == customer_id else "New Order Received"
+                nbody = f"Your order #{order.id} has been placed successfully." if uid == customer_id else f"Order #{order.id} has been placed."
+                db_create_notification(
+                    db, uid,
+                    type="order_placed",
+                    title=ntitle,
+                    body=nbody,
+                    data={"order_id": str(order.id)},
+                    order_id=order.id,
+                )
+        except Exception as e:
+            logger.warning("Failed to persist DB notification on order placement: %s", e)
+
+        # Firebase push notifications to all relevant users
+        FirebaseNotificationService.send_order_notification(
+            order_id=str(order.id),
+            user_ids=all_user_ids,
+            title="Order Placed 🎉",
+            body=f"Order #{order.id} has been placed successfully.",
+        )
+
+        # Emit in-app socket notifications to all relevant users
+        realtime_service.emit_notification_to_users(all_user_ids, {
+            "type": "order_placed",
+            "title": "Order Placed 🎉",
+            "body": f"Order #{order.id} has been placed successfully.",
+            "order_id": str(order.id),
+        })
+
+        EmailService.send_order_confirmation(current_user.email, str(order.id), order.total_amount)
+    except Exception as e:
+        logger.warning("Failed to send order placement notifications: %s", e)
+    # Serialize order using OrderRead to ensure consistent output
+    order_data = OrderRead.model_validate(order, from_attributes=True).model_dump(mode="json")
+    response = {"order": order_data}
+    if payment_info:
+        response["payment"] = payment_info
+    return response
 
 
 @router.get("", response_model=List[OrderRead], summary="List user's orders")
@@ -155,14 +229,35 @@ def update_status(
         if order.delivery_partner_id:
             user_ids.append(str(order.delivery_partner_id))
 
+        # Persist DB-backed notification for all relevant users
+        try:
+            for uid in user_ids:
+                db_create_notification(
+                    db, uid,
+                    type="order_status",
+                    title=f"Order {status_in.status.replace('_', ' ').title()}",
+                    body=f"Order #{order_id} is now {status_in.status.replace('_', ' ')}.",
+                    data={"order_id": order_id},
+                    order_id=order.id,
+                )
+        except Exception as e:
+            logger.warning("Failed to persist DB notification on status update: %s", e)
+
         FirebaseNotificationService.send_order_notification(
             order_id=order_id,
             user_ids=user_ids,
             title=f"Order Updated",
             body=f"Order #{order_id} is now {status_in.status}.",
         )
-    except Exception:
-        pass
+        # Emit in-app notification to relevant users
+        realtime_service.emit_notification_to_users(user_ids, {
+            "type": "order_status",
+            "title": "Order Updated",
+            "body": f"Order #{order_id} is now {status_in.status}.",
+            "order_id": order_id,
+        })
+    except Exception as e:
+        logger.warning("Failed to send order status update notifications: %s", e)
 
     return order
 
@@ -182,6 +277,42 @@ def cancel_existing_order(
         order = cancel_order(db, order)
     except ValueError as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+    try:
+        # Notify restaurant owner and delivery partner about cancellation
+        user_ids = []
+        if order.restaurant and order.restaurant.owner_id:
+            user_ids.append(str(order.restaurant.owner_id))
+        if order.delivery_partner_id:
+            user_ids.append(str(order.delivery_partner_id))
+        if user_ids:
+            # Persist DB-backed notification
+            try:
+                for uid in user_ids:
+                    db_create_notification(
+                        db, uid,
+                        type="order_cancelled",
+                        title="Order Cancelled",
+                        body=f"Order #{order.id} was cancelled by the customer.",
+                        data={"order_id": str(order.id)},
+                        order_id=order.id,
+                    )
+            except Exception as e:
+                logger.warning("Failed to persist DB notification on cancel: %s", e)
+
+            FirebaseNotificationService.send_order_notification(
+                order_id=str(order.id),
+                user_ids=user_ids,
+                title="Order Cancelled",
+                body=f"Order #{order.id} was cancelled by the customer.",
+            )
+            realtime_service.emit_notification_to_users(user_ids, {
+                "type": "order_cancelled",
+                "title": "Order Cancelled",
+                "body": f"Order #{order.id} was cancelled.",
+                "order_id": str(order.id),
+            })
+    except Exception as e:
+        logger.warning("Failed to send cancellation notifications: %s", e)
     return order
 
 
@@ -213,8 +344,39 @@ def accept_existing_order(
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
     try:
         realtime_service.emit_accepted(str(order.id), order)
-    except Exception:
-        pass
+        # Send push + in-app notification to customer about acceptance
+        user_ids = [str(order.customer_id)]
+        if order.delivery_partner_id:
+            user_ids.append(str(order.delivery_partner_id))
+
+        # Persist DB-backed notification
+        try:
+            for uid in user_ids:
+                db_create_notification(
+                    db, uid,
+                    type="order_accepted",
+                    title="Order Accepted",
+                    body=f"Your order #{order.id} has been accepted.",
+                    data={"order_id": str(order.id)},
+                    order_id=order.id,
+                )
+        except Exception as e:
+            logger.warning("Failed to persist DB notification on accept: %s", e)
+
+        FirebaseNotificationService.send_order_notification(
+            order_id=str(order.id),
+            user_ids=user_ids,
+            title="Order Accepted",
+            body=f"Your order #{order.id} has been accepted by the restaurant.",
+        )
+        realtime_service.emit_notification_to_users(user_ids, {
+            "type": "order_accepted",
+            "title": "Order Accepted",
+            "body": f"Your order #{order.id} has been accepted.",
+            "order_id": str(order.id),
+        })
+    except Exception as e:
+        logger.warning("Failed to send order acceptance notifications: %s", e)
     return order
 
 
@@ -235,4 +397,36 @@ def reject_existing_order(
         order = reject_order(db, order, reason=reject_in.reason)
     except ValueError as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+    try:
+        # Notify customer about rejection
+        user_ids = [str(order.customer_id)]
+
+        # Persist DB-backed notification
+        try:
+            for uid in user_ids:
+                db_create_notification(
+                    db, uid,
+                    type="order_rejected",
+                    title="Order Rejected",
+                    body=f"Your order #{order.id} was rejected by the restaurant.",
+                    data={"order_id": str(order.id)},
+                    order_id=order.id,
+                )
+        except Exception as e:
+            logger.warning("Failed to persist DB notification on reject: %s", e)
+
+        FirebaseNotificationService.send_order_notification(
+            order_id=str(order.id),
+            user_ids=user_ids,
+            title="Order Rejected",
+            body=f"Your order #{order.id} was rejected by the restaurant.",
+        )
+        realtime_service.emit_notification_to_users(user_ids, {
+            "type": "order_rejected",
+            "title": "Order Rejected",
+            "body": f"Your order #{order.id} was rejected.",
+            "order_id": str(order.id),
+        })
+    except Exception as e:
+        logger.warning("Failed to send order rejection notifications: %s", e)
     return order

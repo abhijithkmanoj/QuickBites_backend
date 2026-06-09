@@ -6,6 +6,7 @@ from app.db.models.payment import Payment
 from app.db.models.cart import Cart
 from app.schemas.order import OrderCreate
 from app.services.checkout import calculate_checkout
+from app.services import promotions as promotions_service
 
 
 def _parse_uuid(value: str | uuid.UUID) -> uuid.UUID | str:
@@ -74,6 +75,34 @@ def create_order_from_cart(
     # Calculate checkout amounts
     calc = calculate_checkout(items_price_data)
 
+    # Apply promotions if any
+    total_discount_cents = 0
+    applied_promotion_id = None
+    if getattr(order_in, 'promo_codes', None):
+        # validate each code
+        valid_promos = []
+        for code in order_in.promo_codes:
+            res = promotions_service.validate_promo_for_user(db, user_id, code, int(round(calc['total_amount'] * 100)))
+            if res.get('valid'):
+                # fetch promotion to check stackability
+                promo = promotions_service.get_promotion_by_code(db, code)
+                if promo:
+                    valid_promos.append({'promo': promo, 'discount_cents': int(res.get('discount_cents', 0))})
+
+        if valid_promos:
+            # If any non-stackable promos exist, pick the single highest discount among them
+            non_stackables = [p for p in valid_promos if not p['promo'].is_stackable]
+            if non_stackables:
+                best = max(non_stackables, key=lambda x: x['discount_cents'])
+                total_discount_cents = best['discount_cents']
+                applied_promotion_id = best['promo'].id
+            else:
+                # sum stackable promos
+                total_discount_cents = sum(p['discount_cents'] for p in valid_promos)
+                applied_promotion_id = valid_promos[0]['promo'].id
+
+    discount_amount = round(total_discount_cents / 100.0, 2)
+
     # Build delivery address text
     delivery_text = order_in.delivery_address_text or ""
 
@@ -86,20 +115,37 @@ def create_order_from_cart(
         subtotal=calc["subtotal"],
         delivery_fee=calc["delivery_fee"],
         gst=calc["gst"],
-        total_amount=calc["total_amount"],
+        total_amount=max(0.0, round(calc["total_amount"] - discount_amount, 2)),
+        discount_amount=discount_amount,
+        applied_promotion_id=applied_promotion_id,
         status="pending",
     )
     db.add(order)
     db.flush()
 
-    # Create order items from cart items
+    # Create order items from cart items, deduplicating by menu_item_id.
+    # This handles any duplicate cart items that may exist in the database
+    # (e.g., from before the add_item_to_cart dedup fix was deployed).
+    seen: dict[str, dict] = {}
     for cart_item in cart.items:
+        key = str(cart_item.menu_item_id) if cart_item.menu_item_id else cart_item.id
+        if key in seen:
+            # Duplicate menu_item_id — merge quantity into the first occurrence
+            seen[key]["quantity"] += cart_item.quantity
+        else:
+            seen[key] = {
+                "menu_item_id": cart_item.menu_item_id,
+                "name": cart_item.name,
+                "price": cart_item.price,
+                "quantity": cart_item.quantity,
+            }
+    for entry in seen.values():
         order_item = OrderItem(
             order_id=order.id,
-            menu_item_id=cart_item.menu_item_id,
-            name=cart_item.name,
-            price=cart_item.price,
-            quantity=cart_item.quantity,
+            menu_item_id=entry["menu_item_id"],
+            name=entry["name"],
+            price=entry["price"],
+            quantity=entry["quantity"],
         )
         db.add(order_item)
 
@@ -120,6 +166,20 @@ def create_order_from_cart(
 
     db.commit()
     db.refresh(order)
+
+    # Record promotion usage(s)
+    try:
+        if total_discount_cents and getattr(order_in, 'promo_codes', None):
+            # record only for codes that validated
+            for code in order_in.promo_codes:
+                res = promotions_service.validate_promo_for_user(db, user_id, code, int(round(calc['total_amount'] * 100)))
+                if res.get('valid'):
+                    try:
+                        promotions_service.record_promotion_usage(db, res.get('promo_id'), user_id, order.id, int(res.get('discount_cents', 0)))
+                    except Exception:
+                        pass
+    except Exception:
+        pass
     return order
 
 

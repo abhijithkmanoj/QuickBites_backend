@@ -23,9 +23,29 @@ def add_item_to_cart(db: Session, cart: Cart, item_in: CartItemCreate) -> CartIt
     if item_in.menu_item_id:
         menu_item = db.query(MenuItem).filter(MenuItem.id == item_in.menu_item_id).first()
 
+    menu_item_id = menu_item.id if menu_item else None
+
+    # If the same menu_item_id already exists in the cart, increment quantity
+    # instead of creating a duplicate CartItem. Also clean up any stale
+    # duplicate CartItems that may exist from before this fix was deployed.
+    if menu_item_id is not None:
+        matching = [ci for ci in cart.items if ci.menu_item_id == menu_item_id]
+        if matching:
+            # Merge all existing quantities + the new item, then delete stale dupes
+            primary = matching[0]
+            total_qty = sum(ci.quantity for ci in matching) + item_in.quantity
+            primary.quantity = total_qty
+            primary.price = item_in.price  # update price in case it changed
+            for dup in matching[1:]:
+                db.delete(dup)
+            db.add(primary)
+            db.commit()
+            db.refresh(primary)
+            return primary
+
     cart_item = CartItem(
         cart_id=cart.id,
-        menu_item_id=(menu_item.id if menu_item else None),
+        menu_item_id=menu_item_id,
         name=item_in.name,
         price=item_in.price,
         quantity=item_in.quantity,
