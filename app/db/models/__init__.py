@@ -14,6 +14,7 @@ from .user_activity import UserActivity
 from .user_favorite import UserFavorite
 from .cart import Cart, CartItem
 from .notification import Notification
+from .ai_chat_message import AIChatMessage
 
 __all__ = [
     "User",
@@ -34,4 +35,5 @@ __all__ = [
     "Cart",
     "CartItem",
     "Notification",
+    "AIChatMessage",
 ]
