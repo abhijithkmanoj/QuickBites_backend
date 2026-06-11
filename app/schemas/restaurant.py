@@ -47,6 +47,7 @@ class OrderCounts(BaseModel):
     incoming: int = 0
     active: int = 0
     completed: int = 0
+    cancelled: int = 0
     total: int = 0
 
 
@@ -85,3 +86,4 @@ class RestaurantDashboard(BaseModel):
     incoming_orders: List[DashboardOrderRead] = []
     active_orders: List[DashboardOrderRead] = []
     completed_orders: List[DashboardOrderRead] = []
+    cancelled_orders: List[DashboardOrderRead] = []

@@ -36,24 +36,29 @@ def _build_dashboard_data(orders: list[Order]) -> dict:
     incoming = []
     active = []
     completed = []
+    cancelled = []
     for order in orders:
         dto = DashboardOrderRead.model_validate(order, from_attributes=True)
         if order.status == "pending":
             incoming.append(dto)
         elif order.status in ("accepted", "preparing", "ready_for_pickup", "picked_up"):
             active.append(dto)
-        else:
+        elif order.status == "delivered":
             completed.append(dto)
+        else:
+            cancelled.append(dto)
     return {
         "order_counts": OrderCounts(
             incoming=len(incoming),
             active=len(active),
             completed=len(completed),
+            cancelled=len(cancelled),
             total=len(orders),
         ),
         "incoming_orders": incoming,
         "active_orders": active,
         "completed_orders": completed,
+        "cancelled_orders": cancelled,
     }
 
 

@@ -175,7 +175,7 @@ VALID_TRANSITIONS = {
     "accepted": ["preparing", "assigned", "cancelled"],
     "preparing": ["ready_for_pickup", "assigned"],
     "assigned": ["picked_up"],
-    "ready_for_pickup": ["picked_up", "assigned"],
+    "ready_for_pickup": ["picked_up", "assigned", "delivered"],
     "picked_up": ["delivered"],
 }
 

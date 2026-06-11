@@ -23277,3 +23277,138 @@ google.genai.errors.ClientError: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429,
 2026-06-10 14:42:42 [INFO] app.middleware: POST /api/v1/ai-chat 200 5033.20ms
 2026-06-10 14:42:44 [INFO] engineio.server: O9JKPN4KcRQi5SenAAAC: Sending packet PING data None
 2026-06-10 14:42:44 [INFO] engineio.server: O9JKPN4KcRQi5SenAAAC: Received packet PONG data 
+2026-06-11 10:30:22 [INFO] app: Logging configured
+2026-06-11 10:30:54 [INFO] app.middleware: GET /api/v1/promotions/active 200 6029.67ms
+2026-06-11 10:30:56 [INFO] app.middleware: GET /api/v1/promotions/active 200 1623.97ms
+2026-06-11 10:31:29 [INFO] app.middleware: POST /api/v1/auth/login 200 3053.94ms
+2026-06-11 10:31:29 [INFO] app.middleware: OPTIONS /api/v1/auth/me 200 0.00ms
+2026-06-11 10:31:30 [INFO] app.middleware: GET /api/v1/auth/me 200 1205.29ms
+2026-06-11 10:31:30 [INFO] app.middleware: OPTIONS /api/v1/owner/verification-status 200 1.39ms
+2026-06-11 10:31:32 [INFO] app.middleware: GET /api/v1/owner/verification-status 200 1507.55ms
+2026-06-11 10:31:32 [INFO] engineio.server: xRHKAmlfuHvOfERAAAAA: Sending packet OPEN data {'sid': 'xRHKAmlfuHvOfERAAAAA', 'upgrades': [], 'pingTimeout': 20000, 'pingInterval': 25000}
+2026-06-11 10:31:32 [INFO] engineio.server: xRHKAmlfuHvOfERAAAAA: Received request to upgrade to websocket
+2026-06-11 10:31:32 [INFO] engineio.server: xRHKAmlfuHvOfERAAAAA: Upgrade to websocket successful
+2026-06-11 10:31:32 [INFO] app.middleware: OPTIONS /api/v1/notifications/ 200 30.53ms
+2026-06-11 10:31:32 [INFO] app.middleware: OPTIONS /api/v1/ai-chat/history 200 11.92ms
+2026-06-11 10:31:32 [INFO] app.middleware: OPTIONS /api/v1/notifications/ 200 10.72ms
+2026-06-11 10:31:32 [INFO] engineio.server: zfJonPID3Knz1auCAAAB: Sending packet OPEN data {'sid': 'zfJonPID3Knz1auCAAAB', 'upgrades': [], 'pingTimeout': 20000, 'pingInterval': 25000}
+2026-06-11 10:31:32 [INFO] engineio.server: zfJonPID3Knz1auCAAAB: Received request to upgrade to websocket
+2026-06-11 10:31:32 [INFO] engineio.server: zfJonPID3Knz1auCAAAB: Upgrade to websocket successful
+2026-06-11 10:31:32 [INFO] engineio.server: m1oru_X5b3QFw4EDAAAC: Sending packet OPEN data {'sid': 'm1oru_X5b3QFw4EDAAAC', 'upgrades': [], 'pingTimeout': 20000, 'pingInterval': 25000}
+2026-06-11 10:31:32 [INFO] engineio.server: m1oru_X5b3QFw4EDAAAC: Received request to upgrade to websocket
+2026-06-11 10:31:32 [INFO] engineio.server: m1oru_X5b3QFw4EDAAAC: Upgrade to websocket successful
+2026-06-11 10:31:32 [INFO] app.middleware: OPTIONS /api/v1/owner/profile 200 9.73ms
+2026-06-11 10:31:32 [INFO] app.middleware: OPTIONS /api/v1/restaurants/owner/dashboard 200 17.00ms
+2026-06-11 10:31:32 [INFO] app.middleware: OPTIONS /api/v1/owner/profile 200 17.00ms
+2026-06-11 10:31:32 [INFO] app.middleware: OPTIONS /api/v1/restaurants/owner/dashboard 200 14.12ms
+2026-06-11 10:31:32 [INFO] engineio.server: m1oru_X5b3QFw4EDAAAC: Received packet MESSAGE data 0{"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1Y2NjZjdjNy1jOTVlLTRjNDEtODE0ZS01MTFiNWU1Y2IzMDYiLCJleHAiOjE3ODExNTU4ODcsInR5cGUiOiJhY2Nlc3MiLCJqdGkiOiIwYTdhNTE2MS1iOWNiLTQ5ZmItYWNkYS1lMGY2NzJjNjgyMTEifQ.GeZM7CvqeLfRh-dulp11rPeQ6wHCNTMa8sFpLCBpUKM"}
+2026-06-11 10:31:35 [INFO] socketio.server: Ze1uPXXJIfylt2JHAAAD is entering room user:5cccf7c7-c95e-4c41-814e-511b5e5cb306 [/]
+2026-06-11 10:31:35 [INFO] app.socket_server: [Socket.IO] Connection established: Ze1uPXXJIfylt2JHAAAD -> 5cccf7c7-c95e-4c41-814e-511b5e5cb306
+2026-06-11 10:31:35 [INFO] socketio.server: Ze1uPXXJIfylt2JHAAAD is entering room role:restaurant_owner [/]
+2026-06-11 10:31:35 [INFO] engineio.server: m1oru_X5b3QFw4EDAAAC: Sending packet MESSAGE data 0{"sid":"Ze1uPXXJIfylt2JHAAAD"}
+2026-06-11 10:31:36 [INFO] app.middleware: GET /api/v1/ai-chat/history 200 4227.57ms
+2026-06-11 10:31:38 [INFO] app.middleware: GET /api/v1/notifications/ 200 6149.01ms
+2026-06-11 10:31:39 [INFO] app.middleware: GET /api/v1/owner/profile 200 4150.66ms
+2026-06-11 10:31:39 [INFO] app.middleware: GET /api/v1/restaurants/owner/dashboard 200 4454.75ms
+2026-06-11 10:31:41 [INFO] app.middleware: GET /api/v1/notifications/ 200 2297.41ms
+2026-06-11 10:31:41 [INFO] app.middleware: GET /api/v1/owner/profile 200 1417.02ms
+2026-06-11 10:31:42 [INFO] app.middleware: GET /api/v1/restaurants/owner/dashboard 200 2653.51ms
+2026-06-11 10:31:51 [INFO] app.middleware: OPTIONS /api/v1/orders/5b590cc6-b0c4-4251-8aac-050ac010cc17/status 200 0.00ms
+2026-06-11 10:31:54 [INFO] socketio.server: emitting event "order:status" to order:5b590cc6-b0c4-4251-8aac-050ac010cc17 [/]
+2026-06-11 10:31:54 [INFO] socketio.server: emitting event "order:delivered" to order:5b590cc6-b0c4-4251-8aac-050ac010cc17 [/]
+2026-06-11 10:31:57 [INFO] engineio.server: m1oru_X5b3QFw4EDAAAC: Sending packet PING data None
+2026-06-11 10:31:57 [INFO] engineio.server: m1oru_X5b3QFw4EDAAAC: Received packet PONG data 
+2026-06-11 10:31:58 [INFO] app.middleware: PUT /api/v1/orders/5b590cc6-b0c4-4251-8aac-050ac010cc17/status 400 1794.52ms
+2026-06-11 10:31:58 [WARNING] app.monitoring: request_error /api/v1/orders/5b590cc6-b0c4-4251-8aac-050ac010cc17/status -> 400 | Client or server error
+2026-06-11 10:31:58 [INFO] socketio.server: emitting event "notification" to user:aa206d08-6c87-4528-b8a3-f71a43c59623 [/]
+2026-06-11 10:31:58 [INFO] socketio.server: emitting event "notification" to user:5cccf7c7-c95e-4c41-814e-511b5e5cb306 [/]
+2026-06-11 10:31:58 [INFO] engineio.server: m1oru_X5b3QFw4EDAAAC: Sending packet MESSAGE data 2["notification",{"type":"order_status","title":"Order Updated","body":"Order #5b590cc6-b0c4-4251-8aac-050ac010cc17 is now delivered.","order_id":"5b590cc6-b0c4-4251-8aac-050ac010cc17"}]
+2026-06-11 10:31:59 [INFO] app.middleware: PUT /api/v1/orders/5b590cc6-b0c4-4251-8aac-050ac010cc17/status 200 7510.10ms
+2026-06-11 10:32:01 [INFO] app.middleware: GET /api/v1/restaurants/owner/dashboard 200 2754.26ms
+2026-06-11 10:32:05 [INFO] app.middleware: GET /api/v1/restaurants/owner/dashboard 200 2990.39ms
+2026-06-11 10:32:22 [INFO] engineio.server: m1oru_X5b3QFw4EDAAAC: Sending packet PING data None
+2026-06-11 10:32:22 [INFO] engineio.server: m1oru_X5b3QFw4EDAAAC: Received packet PONG data 
+2026-06-11 10:36:42 [INFO] app: Logging configured
+2026-06-11 10:36:59 [INFO] app.middleware: GET /api/v1/restaurants/owner/dashboard 200 7161.75ms
+2026-06-11 10:37:01 [INFO] app.middleware: GET /api/v1/auth/me 200 2651.05ms
+2026-06-11 10:37:02 [INFO] app.middleware: GET /api/v1/auth/me 200 1217.52ms
+2026-06-11 10:37:02 [INFO] app.middleware: GET /api/v1/owner/verification-status 200 1516.54ms
+2026-06-11 10:37:02 [INFO] engineio.server: EcC3CDqctJ08DEWPAAAA: Sending packet OPEN data {'sid': 'EcC3CDqctJ08DEWPAAAA', 'upgrades': [], 'pingTimeout': 20000, 'pingInterval': 25000}
+2026-06-11 10:37:02 [INFO] engineio.server: EcC3CDqctJ08DEWPAAAA: Received request to upgrade to websocket
+2026-06-11 10:37:02 [INFO] engineio.server: EcC3CDqctJ08DEWPAAAA: Upgrade to websocket successful
+2026-06-11 10:37:03 [INFO] engineio.server: 8gCNrMI8VMVJQCC_AAAB: Sending packet OPEN data {'sid': '8gCNrMI8VMVJQCC_AAAB', 'upgrades': [], 'pingTimeout': 20000, 'pingInterval': 25000}
+2026-06-11 10:37:03 [INFO] engineio.server: 8gCNrMI8VMVJQCC_AAAB: Received request to upgrade to websocket
+2026-06-11 10:37:03 [INFO] engineio.server: 8gCNrMI8VMVJQCC_AAAB: Upgrade to websocket successful
+2026-06-11 10:37:03 [INFO] engineio.server: 8gCNrMI8VMVJQCC_AAAB: Received packet MESSAGE data 0{"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1Y2NjZjdjNy1jOTVlLTRjNDEtODE0ZS01MTFiNWU1Y2IzMDYiLCJleHAiOjE3ODExNTU4ODcsInR5cGUiOiJhY2Nlc3MiLCJqdGkiOiIwYTdhNTE2MS1iOWNiLTQ5ZmItYWNkYS1lMGY2NzJjNjgyMTEifQ.GeZM7CvqeLfRh-dulp11rPeQ6wHCNTMa8sFpLCBpUKM"}
+2026-06-11 10:37:05 [INFO] socketio.server: slW2aDMajYCCSSiEAAAC is entering room user:5cccf7c7-c95e-4c41-814e-511b5e5cb306 [/]
+2026-06-11 10:37:05 [INFO] app.socket_server: [Socket.IO] Connection established: slW2aDMajYCCSSiEAAAC -> 5cccf7c7-c95e-4c41-814e-511b5e5cb306
+2026-06-11 10:37:05 [INFO] socketio.server: slW2aDMajYCCSSiEAAAC is entering room role:restaurant_owner [/]
+2026-06-11 10:37:05 [INFO] engineio.server: 8gCNrMI8VMVJQCC_AAAB: Sending packet MESSAGE data 0{"sid":"slW2aDMajYCCSSiEAAAC"}
+2026-06-11 10:37:06 [INFO] app.middleware: GET /api/v1/ai-chat/history 200 3556.93ms
+2026-06-11 10:37:06 [INFO] app.middleware: GET /api/v1/owner/profile 200 3492.30ms
+2026-06-11 10:37:06 [INFO] app.middleware: GET /api/v1/owner/verification-status 200 3637.56ms
+2026-06-11 10:37:06 [INFO] engineio.server: 8gCNrMI8VMVJQCC_AAAB: Received packet MESSAGE data 1
+2026-06-11 10:37:06 [INFO] engineio.server: IK9ir3EOQoeRHXERAAAD: Sending packet OPEN data {'sid': 'IK9ir3EOQoeRHXERAAAD', 'upgrades': [], 'pingTimeout': 20000, 'pingInterval': 25000}
+2026-06-11 10:37:06 [INFO] engineio.server: IK9ir3EOQoeRHXERAAAD: Received request to upgrade to websocket
+2026-06-11 10:37:06 [INFO] engineio.server: IK9ir3EOQoeRHXERAAAD: Upgrade to websocket successful
+2026-06-11 10:37:06 [INFO] engineio.server: IK9ir3EOQoeRHXERAAAD: Received packet MESSAGE data 0{"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1Y2NjZjdjNy1jOTVlLTRjNDEtODE0ZS01MTFiNWU1Y2IzMDYiLCJleHAiOjE3ODExNTU4ODcsInR5cGUiOiJhY2Nlc3MiLCJqdGkiOiIwYTdhNTE2MS1iOWNiLTQ5ZmItYWNkYS1lMGY2NzJjNjgyMTEifQ.GeZM7CvqeLfRh-dulp11rPeQ6wHCNTMa8sFpLCBpUKM"}
+2026-06-11 10:37:07 [INFO] socketio.server: YxVfVaR3l-VRc8a1AAAE is entering room user:5cccf7c7-c95e-4c41-814e-511b5e5cb306 [/]
+2026-06-11 10:37:07 [INFO] app.socket_server: [Socket.IO] Connection established: YxVfVaR3l-VRc8a1AAAE -> 5cccf7c7-c95e-4c41-814e-511b5e5cb306
+2026-06-11 10:37:07 [INFO] socketio.server: YxVfVaR3l-VRc8a1AAAE is entering room role:restaurant_owner [/]
+2026-06-11 10:37:07 [INFO] engineio.server: IK9ir3EOQoeRHXERAAAD: Sending packet MESSAGE data 0{"sid":"YxVfVaR3l-VRc8a1AAAE"}
+2026-06-11 10:37:08 [INFO] app.middleware: GET /api/v1/notifications/ 200 5091.68ms
+2026-06-11 10:37:08 [INFO] app.middleware: GET /api/v1/restaurants/owner/dashboard 200 4990.80ms
+2026-06-11 10:37:08 [INFO] app.middleware: GET /api/v1/ai-chat/history 200 1690.11ms
+2026-06-11 10:37:08 [INFO] app.middleware: GET /api/v1/owner/profile 200 1788.28ms
+2026-06-11 10:37:09 [INFO] app.middleware: GET /api/v1/owner/profile 200 1433.10ms
+2026-06-11 10:37:10 [INFO] app.middleware: GET /api/v1/notifications/ 200 2334.92ms
+2026-06-11 10:37:10 [INFO] app.middleware: GET /api/v1/restaurants/owner/dashboard 200 2646.25ms
+2026-06-11 10:37:15 [INFO] app.middleware: OPTIONS /api/v1/orders/358cc496-82fb-4f41-86d7-2414a18b4834/status 200 0.00ms
+2026-06-11 10:37:18 [INFO] socketio.server: emitting event "order:status" to order:358cc496-82fb-4f41-86d7-2414a18b4834 [/]
+2026-06-11 10:37:18 [INFO] socketio.server: emitting event "order:preparing" to order:358cc496-82fb-4f41-86d7-2414a18b4834 [/]
+2026-06-11 10:37:23 [INFO] socketio.server: emitting event "notification" to user:1eebc59d-2791-47c4-be5f-2c81493ed45d [/]
+2026-06-11 10:37:23 [INFO] socketio.server: emitting event "notification" to user:5cccf7c7-c95e-4c41-814e-511b5e5cb306 [/]
+2026-06-11 10:37:23 [INFO] engineio.server: IK9ir3EOQoeRHXERAAAD: Sending packet MESSAGE data 2["notification",{"type":"order_status","title":"Order Updated","body":"Order #358cc496-82fb-4f41-86d7-2414a18b4834 is now preparing.","order_id":"358cc496-82fb-4f41-86d7-2414a18b4834"}]
+2026-06-11 10:37:23 [INFO] app.middleware: PUT /api/v1/orders/358cc496-82fb-4f41-86d7-2414a18b4834/status 200 7819.20ms
+2026-06-11 10:37:26 [INFO] app.middleware: GET /api/v1/restaurants/owner/dashboard 200 2651.95ms
+2026-06-11 10:37:31 [INFO] engineio.server: IK9ir3EOQoeRHXERAAAD: Sending packet PING data None
+2026-06-11 10:37:31 [INFO] engineio.server: IK9ir3EOQoeRHXERAAAD: Received packet PONG data 
+2026-06-11 10:37:33 [INFO] socketio.server: emitting event "order:status" to order:358cc496-82fb-4f41-86d7-2414a18b4834 [/]
+2026-06-11 10:37:35 [INFO] app.middleware: GET /api/v1/restaurants/owner/dashboard 200 2681.34ms
+2026-06-11 10:37:37 [INFO] socketio.server: emitting event "notification" to user:1eebc59d-2791-47c4-be5f-2c81493ed45d [/]
+2026-06-11 10:37:37 [INFO] socketio.server: emitting event "notification" to user:5cccf7c7-c95e-4c41-814e-511b5e5cb306 [/]
+2026-06-11 10:37:37 [INFO] engineio.server: IK9ir3EOQoeRHXERAAAD: Sending packet MESSAGE data 2["notification",{"type":"order_status","title":"Order Updated","body":"Order #358cc496-82fb-4f41-86d7-2414a18b4834 is now ready_for_pickup.","order_id":"358cc496-82fb-4f41-86d7-2414a18b4834"}]
+2026-06-11 10:37:37 [INFO] app.middleware: PUT /api/v1/orders/358cc496-82fb-4f41-86d7-2414a18b4834/status 200 7623.24ms
+2026-06-11 10:37:40 [INFO] app.middleware: GET /api/v1/restaurants/owner/dashboard 200 2631.34ms
+2026-06-11 10:37:43 [INFO] socketio.server: emitting event "order:status" to order:358cc496-82fb-4f41-86d7-2414a18b4834 [/]
+2026-06-11 10:37:43 [INFO] socketio.server: emitting event "order:delivered" to order:358cc496-82fb-4f41-86d7-2414a18b4834 [/]
+2026-06-11 10:37:48 [INFO] socketio.server: emitting event "notification" to user:1eebc59d-2791-47c4-be5f-2c81493ed45d [/]
+2026-06-11 10:37:48 [INFO] socketio.server: emitting event "notification" to user:5cccf7c7-c95e-4c41-814e-511b5e5cb306 [/]
+2026-06-11 10:37:48 [INFO] engineio.server: IK9ir3EOQoeRHXERAAAD: Sending packet MESSAGE data 2["notification",{"type":"order_status","title":"Order Updated","body":"Order #358cc496-82fb-4f41-86d7-2414a18b4834 is now delivered.","order_id":"358cc496-82fb-4f41-86d7-2414a18b4834"}]
+2026-06-11 10:37:48 [INFO] app.middleware: PUT /api/v1/orders/358cc496-82fb-4f41-86d7-2414a18b4834/status 200 7342.00ms
+2026-06-11 10:37:51 [INFO] app.middleware: GET /api/v1/restaurants/owner/dashboard 200 2755.70ms
+2026-06-11 10:37:56 [INFO] engineio.server: IK9ir3EOQoeRHXERAAAD: Sending packet PING data None
+2026-06-11 10:37:56 [INFO] engineio.server: IK9ir3EOQoeRHXERAAAD: Received packet PONG data 
+2026-06-11 10:38:05 [INFO] app.middleware: GET /api/v1/restaurants/owner/dashboard 200 2571.43ms
+2026-06-11 10:38:21 [INFO] engineio.server: IK9ir3EOQoeRHXERAAAD: Sending packet PING data None
+2026-06-11 10:38:21 [INFO] engineio.server: IK9ir3EOQoeRHXERAAAD: Received packet PONG data 
+2026-06-11 10:38:35 [INFO] app.middleware: GET /api/v1/restaurants/owner/dashboard 200 2686.28ms
+2026-06-11 10:38:46 [INFO] engineio.server: IK9ir3EOQoeRHXERAAAD: Sending packet PING data None
+2026-06-11 10:38:46 [INFO] engineio.server: IK9ir3EOQoeRHXERAAAD: Received packet PONG data 
+2026-06-11 10:39:05 [INFO] app.middleware: GET /api/v1/restaurants/owner/dashboard 200 2793.22ms
+2026-06-11 10:39:11 [INFO] engineio.server: IK9ir3EOQoeRHXERAAAD: Sending packet PING data None
+2026-06-11 10:39:11 [INFO] engineio.server: IK9ir3EOQoeRHXERAAAD: Received packet PONG data 
+2026-06-11 10:39:35 [INFO] app.middleware: GET /api/v1/restaurants/owner/dashboard 200 2584.18ms
+2026-06-11 10:39:36 [INFO] engineio.server: IK9ir3EOQoeRHXERAAAD: Sending packet PING data None
+2026-06-11 10:39:36 [INFO] engineio.server: IK9ir3EOQoeRHXERAAAD: Received packet PONG data 
+2026-06-11 10:40:01 [INFO] engineio.server: IK9ir3EOQoeRHXERAAAD: Sending packet PING data None
+2026-06-11 10:40:01 [INFO] engineio.server: IK9ir3EOQoeRHXERAAAD: Received packet PONG data 
+2026-06-11 10:40:05 [INFO] app.middleware: GET /api/v1/restaurants/owner/dashboard 200 2899.75ms
+2026-06-11 10:40:26 [INFO] engineio.server: IK9ir3EOQoeRHXERAAAD: Sending packet PING data None
+2026-06-11 10:40:26 [INFO] engineio.server: IK9ir3EOQoeRHXERAAAD: Received packet PONG data 
+2026-06-11 10:40:35 [INFO] app.middleware: GET /api/v1/restaurants/owner/dashboard 200 2791.11ms
+2026-06-11 10:40:51 [INFO] engineio.server: IK9ir3EOQoeRHXERAAAD: Sending packet PING data None
+2026-06-11 10:40:51 [INFO] engineio.server: IK9ir3EOQoeRHXERAAAD: Received packet PONG data 
+2026-06-11 10:41:06 [INFO] app.middleware: GET /api/v1/restaurants/owner/dashboard 200 3015.38ms
+2026-06-11 10:41:16 [INFO] engineio.server: IK9ir3EOQoeRHXERAAAD: Sending packet PING data None
+2026-06-11 10:41:16 [INFO] engineio.server: IK9ir3EOQoeRHXERAAAD: Received packet PONG data 
