@@ -29,12 +29,12 @@ class CartItemRead(CartItemBase):
 
 
 class CartRead(BaseModel):
-    id: UUID
+    id: Optional[UUID] = None
     user_id: UUID
-    restaurant_id: UUID
+    restaurant_id: Optional[UUID] = None
     items: List[CartItemRead] = []
     applicable_promotions: List[dict] = []
-    created_at: datetime
+    created_at: Optional[datetime] = None
 
     class Config:
         from_attributes = True

@@ -27,6 +27,7 @@ class Order(Base):
     applied_promotion_id = Column(GUID, ForeignKey("promotions.id", ondelete="SET NULL"), nullable=True)
     tip_amount = Column(Float, nullable=False, default=0.0)
     tip_amount_cents = Column(BigInteger, nullable=True)
+    rejection_reason = Column(Text, nullable=True)
     status = Column(String(50), nullable=False, default="pending")
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)

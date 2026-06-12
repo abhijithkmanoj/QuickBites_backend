@@ -15,6 +15,7 @@ class RestaurantBase(BaseModel):
     rating: Optional[float] = Field(default=0.0, ge=0.0, le=5.0)
     delivery_time: Optional[int] = Field(default=None, ge=0)
     is_active: bool = True
+    auto_handle_orders: bool = True
 
 
 class RestaurantCreate(RestaurantBase):
@@ -31,6 +32,7 @@ class RestaurantUpdate(BaseModel):
     rating: Optional[float] = Field(default=None, ge=0.0, le=5.0)
     delivery_time: Optional[int] = Field(default=None, ge=0)
     is_active: Optional[bool] = None
+    auto_handle_orders: Optional[bool] = None
 
 
 class RestaurantRead(RestaurantBase):
@@ -67,6 +69,7 @@ class DashboardOrderRead(BaseModel):
     customer_id: UUID
     restaurant_id: UUID
     delivery_address_text: Optional[str] = None
+    rejection_reason: Optional[str] = None
     subtotal: float
     delivery_fee: float
     gst: float

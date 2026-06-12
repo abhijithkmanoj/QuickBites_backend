@@ -183,25 +183,61 @@ def create_order_from_cart(
     return order
 
 
+def _restore_stock(db: Session, order: Order) -> None:
+    """Restore stock quantities and re-enable menu items when an accepted order is cancelled."""
+    from app.crud.menu_item import get_menu_item
+
+    for item in order.items:
+        if item.menu_item_id is None:
+            continue
+        menu_item = get_menu_item(db, item.menu_item_id)
+        if menu_item is None or menu_item.stock_quantity is None:
+            continue  # Skip items with unlimited stock or that no longer exist
+        menu_item.stock_quantity += item.quantity
+        if not menu_item.is_available and menu_item.stock_quantity > 0:
+            menu_item.is_available = True
+        db.add(menu_item)
+
+
 def update_order_status(
     db: Session,
     order: Order,
     new_status: str,
 ) -> Order:
-    """Update order status."""
+    """Update order status. Restores stock if transitioning from accepted to cancelled."""
+    was_accepted = order.status == "accepted"
     order.status = new_status
     db.add(order)
+
+    if was_accepted and new_status == "cancelled":
+        _restore_stock(db, order)
+
     db.commit()
     db.refresh(order)
     return order
 
 
 def accept_order(db: Session, order: Order) -> Order:
-    """Accept a pending order."""
+    """Accept a pending order and decrement stock for all items."""
     if order.status != "pending":
         raise ValueError(f"Only pending orders can be accepted. Current status: '{order.status}'.")
     order.status = "accepted"
     db.add(order)
+
+    # Decrement stock for each item in the order
+    from app.crud.menu_item import get_menu_item
+    for item in order.items:
+        if item.menu_item_id is None:
+            continue
+        menu_item = get_menu_item(db, item.menu_item_id)
+        if menu_item is None or menu_item.stock_quantity is None:
+            continue  # Skip items with unlimited stock
+        menu_item.stock_quantity -= item.quantity
+        if menu_item.stock_quantity <= 0:
+            menu_item.stock_quantity = 0
+            menu_item.is_available = False
+        db.add(menu_item)
+
     db.commit()
     db.refresh(order)
     return order
@@ -212,6 +248,7 @@ def reject_order(db: Session, order: Order, reason: str | None = None) -> Order:
     if order.status != "pending":
         raise ValueError(f"Only pending orders can be rejected. Current status: '{order.status}'.")
     order.status = "cancelled"
+    order.rejection_reason = reason
     if order.payment:
         order.payment.status = "cancelled"
     db.add(order)
@@ -221,13 +258,18 @@ def reject_order(db: Session, order: Order, reason: str | None = None) -> Order:
 
 
 def cancel_order(db: Session, order: Order) -> Order:
-    """Cancel an order (only if pending or accepted)."""
+    """Cancel an order (only if pending or accepted). Restores stock if order was accepted."""
     if order.status not in ("pending", "accepted"):
         raise ValueError(f"Cannot cancel order in '{order.status}' status.")
+    was_accepted = order.status == "accepted"
     order.status = "cancelled"
     if order.payment:
         order.payment.status = "cancelled"
     db.add(order)
+
+    if was_accepted:
+        _restore_stock(db, order)
+
     db.commit()
     db.refresh(order)
     return order

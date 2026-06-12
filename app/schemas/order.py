@@ -37,6 +37,7 @@ class OrderRead(BaseModel):
     assigned_at: Optional[datetime] = None
     picked_up_at: Optional[datetime] = None
     delivered_at: Optional[datetime] = None
+    rejection_reason: Optional[str] = None
     subtotal: float
     delivery_fee: float
     gst: float

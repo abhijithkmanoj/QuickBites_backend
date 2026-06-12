@@ -32,6 +32,7 @@ def create_menu_item(db: Session, menu_item_in: MenuItemCreate) -> MenuItem:
         image_url=menu_item_in.image_url,
         is_veg=menu_item_in.is_veg,
         is_available=menu_item_in.is_available,
+        stock_quantity=menu_item_in.stock_quantity,
     )
     db.add(menu_item)
     db.commit()

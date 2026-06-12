@@ -24,6 +24,7 @@ from app.services import realtime as realtime_service
 from app.services.firebase_notifications import FirebaseNotificationService
 from app.services.notifications import EmailService
 from app.services import stripe_service
+from app.services.order_auto_handler import auto_handle_order
 from app.core.config import settings
 from app.db.models.payment import Payment
 
@@ -57,6 +58,14 @@ def place_order(
         order_in.delivery_address_text = ", ".join(parts)
 
     order = create_order_from_cart(db, current_user.id, cart, order_in)
+
+    # Auto-handle order: check menu item availability and accept/reject accordingly
+    try:
+        order = auto_handle_order(db, order)
+        db.refresh(order)
+    except Exception as e:
+        logger.warning("Order auto-handler failed for %s: %s", order.id, e)
+
     # award loyalty points for the order (best-effort)
     try:
         from app.services.loyalty import award_points_for_order
@@ -94,39 +103,113 @@ def place_order(
         customer_id = str(current_user.id)
         all_user_ids = [customer_id] + owner_ids
 
-        # Persist DB-backed notifications for all relevant users
-        try:
-            for uid in all_user_ids:
-                ntitle = "Order Placed 🎉" if uid == customer_id else "New Order Received"
-                nbody = f"Your order #{order.id} has been placed successfully." if uid == customer_id else f"Order #{order.id} has been placed."
-                db_create_notification(
-                    db, uid,
-                    type="order_placed",
-                    title=ntitle,
-                    body=nbody,
-                    data={"order_id": str(order.id)},
-                    order_id=order.id,
-                )
-        except Exception as e:
-            logger.warning("Failed to persist DB notification on order placement: %s", e)
+        if order.status == "accepted":
+            # Emit realtime socket event for the status change
+            try:
+                realtime_service.emit_accepted(str(order.id), order)
+            except Exception as e:
+                logger.warning("Failed to emit realtime accept event: %s", e)
 
-        # Firebase push notifications to all relevant users
-        FirebaseNotificationService.send_order_notification(
-            order_id=str(order.id),
-            user_ids=all_user_ids,
-            title="Order Placed 🎉",
-            body=f"Order #{order.id} has been placed successfully.",
-        )
+            # Auto-accepted — send acceptance notifications
+            try:
+                for uid in all_user_ids:
+                    db_create_notification(
+                        db, uid,
+                        type="order_accepted",
+                        title="Order Accepted ✅" if uid == customer_id else "Order Accepted",
+                        body=f"Your order #{order.id} has been accepted — all items available." if uid == customer_id else f"Order #{order.id} has been automatically accepted.",
+                        data={"order_id": str(order.id)},
+                        order_id=order.id,
+                    )
+            except Exception as e:
+                logger.warning("Failed to persist DB notification on auto-accept: %s", e)
 
-        # Emit in-app socket notifications to all relevant users
-        realtime_service.emit_notification_to_users(all_user_ids, {
-            "type": "order_placed",
-            "title": "Order Placed 🎉",
-            "body": f"Order #{order.id} has been placed successfully.",
-            "order_id": str(order.id),
-        })
+            FirebaseNotificationService.send_order_notification(
+                order_id=str(order.id),
+                user_ids=all_user_ids,
+                title="Order Accepted ✅",
+                body=f"Order #{order.id} has been accepted — all items available.",
+            )
 
-        EmailService.send_order_confirmation(current_user.email, str(order.id), order.total_amount)
+            realtime_service.emit_notification_to_users(all_user_ids, {
+                "type": "order_accepted",
+                "title": "Order Accepted ✅",
+                "body": f"Order #{order.id} has been accepted.",
+                "order_id": str(order.id),
+            })
+
+            EmailService.send_order_confirmation(current_user.email, str(order.id), order.total_amount)
+
+        elif order.status == "cancelled":
+            # Emit realtime socket event for the status change
+            try:
+                realtime_service.emit_status_update(str(order.id), order)
+            except Exception as e:
+                logger.warning("Failed to emit realtime status update for rejection: %s", e)
+
+            # Auto-rejected — send rejection notification with reason
+            rejection_body = f"Order #{order.id} was cancelled."
+            if order.rejection_reason:
+                rejection_body = f"{order.rejection_reason}"
+
+            try:
+                for uid in all_user_ids:
+                    db_create_notification(
+                        db, uid,
+                        type="order_rejected",
+                        title="Order Cancelled ❌" if uid == customer_id else "Order Auto-Rejected",
+                        body=rejection_body if uid == customer_id else f"Order #{order.id} was auto-rejected due to unavailable items.",
+                        data={"order_id": str(order.id)},
+                        order_id=order.id,
+                    )
+            except Exception as e:
+                logger.warning("Failed to persist DB rejection notification: %s", e)
+
+            FirebaseNotificationService.send_order_notification(
+                order_id=str(order.id),
+                user_ids=all_user_ids,
+                title="Order Cancelled ❌",
+                body=rejection_body,
+            )
+
+            realtime_service.emit_notification_to_users(all_user_ids, {
+                "type": "order_rejected",
+                "title": "Order Cancelled ❌",
+                "body": rejection_body,
+                "order_id": str(order.id),
+            })
+        else:
+            # Still pending — send standard order placed notifications
+            try:
+                for uid in all_user_ids:
+                    ntitle = "Order Placed 🎉" if uid == customer_id else "New Order Received"
+                    nbody = f"Your order #{order.id} has been placed successfully." if uid == customer_id else f"Order #{order.id} has been placed."
+                    db_create_notification(
+                        db, uid,
+                        type="order_placed",
+                        title=ntitle,
+                        body=nbody,
+                        data={"order_id": str(order.id)},
+                        order_id=order.id,
+                    )
+            except Exception as e:
+                logger.warning("Failed to persist DB notification on order placement: %s", e)
+
+            FirebaseNotificationService.send_order_notification(
+                order_id=str(order.id),
+                user_ids=all_user_ids,
+                title="Order Placed 🎉",
+                body=f"Order #{order.id} has been placed successfully.",
+            )
+
+            realtime_service.emit_notification_to_users(all_user_ids, {
+                "type": "order_placed",
+                "title": "Order Placed 🎉",
+                "body": f"Order #{order.id} has been placed successfully.",
+                "order_id": str(order.id),
+            })
+
+            EmailService.send_order_confirmation(current_user.email, str(order.id), order.total_amount)
     except Exception as e:
         logger.warning("Failed to send order placement notifications: %s", e)
     # Serialize order using OrderRead to ensure consistent output

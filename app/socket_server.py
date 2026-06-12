@@ -39,7 +39,7 @@ LIVE_SESSIONS: Dict[str, str] = {}
 
 
 @sio.event
-async def connect(sid: str, environ: dict, auth: dict | None = None) -> None:
+async def connect(sid: str, environ: dict, auth: dict | None = None) -> bool:
     logger.debug(f"[Socket.IO] Connect attempt - sid={sid}, auth={bool(auth)}, headers={environ.get('HTTP_ORIGIN', 'no origin')}")
     # Capture the main ASGI event loop so realtime helpers can schedule
     # coroutines from sync endpoints via run_coroutine_threadsafe.
@@ -51,35 +51,31 @@ async def connect(sid: str, environ: dict, auth: dict | None = None) -> None:
     
     token = (auth or {}).get("token") if isinstance(auth, dict) else None
     if not token:
-        # No token provided — just disconnect the socket without raising an exception
+        # No token provided — reject the connection with 403
         logger.warning(f"[Socket.IO] No token provided for connection {sid}, auth content: {auth}")
-        await sio.disconnect(sid)
-        return
+        return False
 
     try:
         payload = decode_token(token)
         if payload.get("type") != "access":
             logger.warning(f"[Socket.IO] Invalid token type for connection {sid}: {payload.get('type')}")
-            raise ValueError("Invalid token type")
+            return False
         user_id = payload.get("sub")
         logger.debug(f"[Socket.IO] Token decoded successfully for user {user_id}")
     except Exception as e:
         logger.error(f"[Socket.IO] Token decode failed for connection {sid}: {str(e)}, token: {token[:20]}...")
-        await sio.disconnect(sid)
-        return
+        return False
 
     db = SessionLocal()
     try:
         user = get_user(db, user_id)
         if not user or not user.is_active:
             logger.warning(f"[Socket.IO] User not found or inactive: {user_id}")
-            await sio.disconnect(sid)
-            return
+            return False
         logger.debug(f"[Socket.IO] User authenticated: {user.id} - {user.email}")
     except Exception as e:
         logger.error(f"[Socket.IO] User lookup failed for {user_id}: {str(e)}")
-        await sio.disconnect(sid)
-        return
+        return False
     finally:
         db.close()
 
@@ -94,6 +90,8 @@ async def connect(sid: str, environ: dict, auth: dict | None = None) -> None:
         await sio.enter_room(sid, "role:delivery_partner")
     elif user.role == "admin":
         await sio.enter_room(sid, "role:admin")
+    
+    return True
 
 
 @sio.event

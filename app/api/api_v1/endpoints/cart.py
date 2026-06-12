@@ -14,7 +14,16 @@ router = APIRouter()
 def read_cart(current_user: User = Depends(get_current_active_user), db: Session = Depends(get_db)):
     cart = get_cart_by_user(db, current_user.id)
     if not cart:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Cart not found.")
+        # Return an empty cart structure instead of 404
+        return CartRead(
+            id=None,
+            user_id=current_user.id,
+            restaurant_id=None,
+            items=[],
+            created_at=None,
+            updated_at=None,
+            applicable_promotions=[],
+        )
     # compute applicable promotions for cart total
     try:
         total_cents = int(sum([int(i.price * 100) * i.quantity for i in cart.items]))

@@ -21,6 +21,7 @@ class Restaurant(Base):
     rating = Column(Float, nullable=False, default=0.0)
     delivery_time = Column(Integer, nullable=True)
     is_active = Column(Boolean, default=True)
+    auto_handle_orders = Column(Boolean, default=True)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 

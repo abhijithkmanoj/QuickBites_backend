@@ -13,6 +13,7 @@ class MenuItemBase(BaseModel):
     image_url: Optional[str] = None
     is_veg: bool = False
     is_available: bool = True
+    stock_quantity: Optional[int] = None
 
 
 class MenuItemCreate(MenuItemBase):
@@ -27,6 +28,7 @@ class MenuItemUpdate(BaseModel):
     image_url: Optional[str] = None
     is_veg: Optional[bool] = None
     is_available: Optional[bool] = None
+    stock_quantity: Optional[int] = None
 
 
 class MenuItemRead(MenuItemBase):

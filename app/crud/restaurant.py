@@ -104,6 +104,7 @@ def create_restaurant(db: Session, restaurant_in: RestaurantCreate) -> Restauran
         rating=restaurant_in.rating or 0.0,
         delivery_time=restaurant_in.delivery_time,
         is_active=restaurant_in.is_active,
+        auto_handle_orders=restaurant_in.auto_handle_orders,
     )
     db.add(restaurant)
     db.commit()
