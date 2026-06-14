@@ -47,12 +47,6 @@ class Settings(BaseSettings):
     # OpenRouter API (alternative LLM provider for AI chatbot)
     OPENROUTER_API_KEY: Optional[str] = None
 
-    # Stripe / Payments
-    STRIPE_SECRET_KEY: Optional[str] = None
-    STRIPE_PUBLISHABLE_KEY: Optional[str] = None
-    STRIPE_WEBHOOK_SECRET: Optional[str] = None
-    PAYMENTS_ENABLED: bool = False
-
     RATE_LIMIT_REQUESTS: int = 100
     RATE_LIMIT_WINDOW_SECONDS: int = 60
 

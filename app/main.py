@@ -1,5 +1,11 @@
+import logging
+from pathlib import Path
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
+from starlette.exceptions import HTTPException
 
 from app.api.api_v1.api import router as api_router
 from app.core.config import settings
@@ -67,7 +73,7 @@ socket_app = StarletteCORSMiddleware(
 socket_app = FixCorsASGI(socket_app)
 app.mount("/socket.io", socket_app)
 
-# Wrap the FastAPI app with an ASGI wrapper that fixes CORS header duplication
+
 @app.get("/healthz", include_in_schema=False)
 def health_probe():
     return {"status": "ok"}
@@ -82,6 +88,42 @@ def debug():
         "docs_url": app.docs_url,
         "openapi_url": app.openapi_url,
     }
+
+
+# ---------------------------------------------------------------------------
+# Serve the pre-built frontend (React SPA) when running inside the unified
+# Docker image. The frontend_dist directory exists only in the Docker image.
+# ---------------------------------------------------------------------------
+FRONTEND_DIST = Path(__file__).resolve().parent.parent / "frontend_dist"
+if FRONTEND_DIST.is_dir():
+    # Serve static assets (JS, CSS, images, favicon, etc.)
+    app.mount(
+        "/assets",
+        StaticFiles(directory=str(FRONTEND_DIST / "assets")),
+        name="frontend_assets",
+    )
+
+    # SPA fallback — all non-API, non-socket.io routes serve index.html
+    @app.get("/{full_path:path}", include_in_schema=False)
+    async def serve_frontend(full_path: str):
+        # Let the API and other mounts handle their own routes
+        if (
+            full_path.startswith("api/") or
+            full_path.startswith("socket.io/") or
+            full_path.startswith("docs") or
+            full_path.startswith("redoc") or
+            full_path.startswith("openapi") or
+            full_path == "healthz" or
+            full_path == "debug"
+        ):
+            raise HTTPException(status_code=404)
+        index_path = FRONTEND_DIST / "index.html"
+        if not index_path.is_file():
+            raise HTTPException(status_code=404)
+        return HTMLResponse(content=index_path.read_text(encoding="utf-8"))
+
+    logger = logging.getLogger("app.frontend")
+    logger.info("Frontend static files mounted from %s", FRONTEND_DIST)
 
 # Wrap the FastAPI app with an ASGI wrapper that fixes CORS header duplication
 # Do this after routes/mounts are set up so it runs at the ASGI send level

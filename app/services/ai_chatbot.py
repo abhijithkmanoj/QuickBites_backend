@@ -125,7 +125,7 @@ The AI assistant can answer questions about all app features, guide users on how
 ### ORDERS
 - **POST /api/v1/orders** — Place an order from current cart
   - Supports address_id or delivery_address_text
-  - payment_method: "cod" (default) or "card" (if payments enabled)
+  - payment_method: "cod" (Cash on Delivery — the only payment option)
   - Optional promo_codes array
   - Awards loyalty points automatically
   - Sends push + in-app + email notifications
@@ -145,15 +145,9 @@ The AI assistant can answer questions about all app features, guide users on how
 - **PUT /api/v1/addresses/{id}** — Update an address
 - **DELETE /api/v1/addresses/{id}** — Delete an address
 
-### PAYMENTS (Stripe)
-- **POST /api/v1/payments/intent** — Create a PaymentIntent
-- **POST /api/v1/payments/confirm** — Confirm a payment
-- **GET /api/v1/payments/methods** — List saved payment methods
-- **POST /api/v1/payments/methods** — Save a payment method
-- **DELETE /api/v1/payments/methods/{id}** — Remove a saved payment method
-- **POST /api/v1/payments/refund** — Refund a payment
-- **POST /api/v1/payments/webhook** — Stripe webhook endpoint
-- Note: Payments must be enabled on the server (PAYMENTS_ENABLED=true)
+### PAYMENTS
+- **payment_method**: Only "cod" (Cash on Delivery) is supported — pay when you receive your order.
+- No card or online payment integration is configured.
 
 ### DELIVERY PARTNER
 - **POST /api/v1/delivery/onboard** — Submit onboarding details (vehicle, license, aadhar)

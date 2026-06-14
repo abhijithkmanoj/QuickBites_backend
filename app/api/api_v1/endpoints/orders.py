@@ -23,7 +23,6 @@ from app.schemas.order import OrderCreate, OrderRead, OrderReject, OrderStatusUp
 from app.services import realtime as realtime_service
 from app.services.firebase_notifications import FirebaseNotificationService
 from app.services.notifications import EmailService
-from app.services import stripe_service
 from app.services.order_auto_handler import auto_handle_order
 from app.core.config import settings
 from app.db.models.payment import Payment
@@ -77,27 +76,6 @@ def place_order(
     except Exception:
         pass
     payment_info = None
-
-    # If user requested a non-COD payment and payments are enabled, create a PaymentIntent
-    if getattr(order_in, "payment_method", "cod") != "cod" and settings.PAYMENTS_ENABLED:
-        try:
-            amount_cents = int(round(order.total_amount * 100))
-            intent = stripe_service.create_payment_intent(amount_cents, "inr", metadata={"order_id": str(order.id), "user_id": str(current_user.id)})
-            # persist payment record
-            payment = Payment(
-                order_id=order.id,
-                user_id=current_user.id,
-                amount=order.total_amount,
-                method="card",
-                status="pending",
-            )
-            db.add(payment)
-            db.commit()
-            db.refresh(payment)
-            payment_info = {"client_secret": intent.client_secret, "payment_intent_id": intent.id, "payment_id": str(payment.id)}
-        except Exception:
-            # Fail silently for now — order is created; client can retry payment
-            payment_info = None
     try:
         owner_ids = [str(order.restaurant.owner_id)] if order.restaurant and order.restaurant.owner_id else []
         customer_id = str(current_user.id)

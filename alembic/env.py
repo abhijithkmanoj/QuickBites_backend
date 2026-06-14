@@ -21,7 +21,12 @@ fileConfig(config.config_file_name)
 
 configured_url = config.get_main_option("sqlalchemy.url")
 if settings.DATABASE_URL:
-    config.set_main_option("sqlalchemy.url", settings.DATABASE_URL)
+    # Ensure Psycopg v3 driver is explicitly used (not psycopg2),
+    # matching the logic in app/db/session.py
+    database_url = settings.DATABASE_URL
+    if database_url.startswith("postgresql://"):
+        database_url = database_url.replace("postgresql://", "postgresql+psycopg://", 1)
+    config.set_main_option("sqlalchemy.url", database_url)
 elif configured_url is None:
     raise RuntimeError(
         "Alembic requires a database URL. Set DATABASE_URL in the environment or provide sqlalchemy.url in alembic.ini."
