@@ -104,7 +104,8 @@ if FRONTEND_DIST.is_dir():
     )
 
     # SPA fallback — all non-API, non-socket.io routes serve index.html
-    @app.get("/{full_path:path}", include_in_schema=False)
+    # Support both GET and HEAD (Render's health checks may send HEAD)
+    @app.api_route("/{full_path:path}", methods=["GET", "HEAD"], include_in_schema=False)
     async def serve_frontend(full_path: str):
         # Let the API and other mounts handle their own routes
         if (
