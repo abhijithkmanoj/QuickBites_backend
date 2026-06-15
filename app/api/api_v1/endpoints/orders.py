@@ -1,4 +1,6 @@
+import json
 import logging
+import urllib.request
 from typing import List
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
@@ -190,6 +192,45 @@ def place_order(
             EmailService.send_order_confirmation(current_user.email, str(order.id), order.total_amount)
     except Exception as e:
         logger.warning("Failed to send order placement notifications: %s", e)
+
+    # Send webhook to n8n for rich HTML order confirmation email
+    try:
+        if settings.N8N_WEBHOOK_URL:
+            n8n_payload = {
+                "order_id": str(order.id),
+                "customer_name": current_user.name,
+                "customer_email": current_user.email,
+                "restaurant_name": order.restaurant.name if order.restaurant else "N/A",
+                "items": [
+                    {
+                        "name": item.name,
+                        "quantity": item.quantity,
+                        "price": item.price,
+                    }
+                    for item in order.items
+                ],
+                "subtotal": order.subtotal,
+                "delivery_fee": order.delivery_fee,
+                "gst": order.gst,
+                "discount_amount": order.discount_amount or 0,
+                "total_amount": order.total_amount,
+                "delivery_address": order.delivery_address_text or "N/A",
+                "payment_method": order.payment.method if order.payment else "cod",
+                "status": order.status,
+                "order_date": order.created_at.strftime("%Y-%m-%d %H:%M:%S"),
+            }
+            data = json.dumps(n8n_payload).encode("utf-8")
+            req = urllib.request.Request(
+                settings.N8N_WEBHOOK_URL,
+                data=data,
+                headers={"Content-Type": "application/json"},
+                method="POST",
+            )
+            urllib.request.urlopen(req, timeout=10)
+            logger.info("n8n webhook sent for order %s", order.id)
+    except Exception as e:
+        logger.warning("Failed to send n8n webhook for order %s: %s", order.id, e)
+
     # Serialize order using OrderRead to ensure consistent output
     order_data = OrderRead.model_validate(order, from_attributes=True).model_dump(mode="json")
     response = {"order": order_data}

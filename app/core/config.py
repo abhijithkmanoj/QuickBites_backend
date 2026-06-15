@@ -47,6 +47,9 @@ class Settings(BaseSettings):
     # OpenRouter API (alternative LLM provider for AI chatbot)
     OPENROUTER_API_KEY: Optional[str] = None
 
+    # n8n automation webhook URL for order confirmation emails
+    N8N_WEBHOOK_URL: Optional[str] = None
+
     RATE_LIMIT_REQUESTS: int = 100
     RATE_LIMIT_WINDOW_SECONDS: int = 60
 
