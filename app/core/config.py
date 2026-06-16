@@ -48,7 +48,7 @@ class Settings(BaseSettings):
     OPENROUTER_API_KEY: Optional[str] = None
 
     # n8n automation webhook URL for order confirmation emails
-    N8N_WEBHOOK_URL: Optional[str] = https://quickbites.app.n8n.cloud/webhook-test/be191f00-af04-4e98-a3a8-5f6830f240d9
+    N8N_WEBHOOK_URL: Optional[str] = None
 
     RATE_LIMIT_REQUESTS: int = 100
     RATE_LIMIT_WINDOW_SECONDS: int = 60
